@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatchIQ — Fish Smarter. Navigate Better.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --teal-dim:#007a65;
+      --amber:   #f5a623;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── WATER BACKGROUND ── */
+    .water-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .water-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 60% at 20% 80%, rgba(0,201,167,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 80% at 80% 20%, rgba(0,80,160,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 50% at 50% 100%, rgba(0,20,60,0.8) 0%, transparent 70%);
+    }
+    /* animated depth lines */
+    .water-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 80px,
+        rgba(0,201,167,0.018) 80px,
+        rgba(0,201,167,0.018) 81px
+      );
+      animation: driftLines 20s linear infinite;
+    }
+    @keyframes driftLines {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(81px); }
+    }
+
+    /* noise grain overlay */
+    .grain {
+      position: fixed;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      animation: grainShift 0.4s steps(1) infinite;
+    }
+    @keyframes grainShift {
+      0%   { transform: translate(0,0); }
+      25%  { transform: translate(-2%,-1%); }
+      50%  { transform: translate(1%, 2%); }
+      75%  { transform: translate(2%,-2%); }
+      100% { transform: translate(-1%, 1%); }
+    }
+
+    /* ── LAYOUT ── */
+    .page { position: relative; z-index: 2; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(6,14,26,0.95) 0%, rgba(6,14,26,0) 100%);
+      backdrop-filter: blur(2px);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+    }
+    .nav-url {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--fog);
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+
+    /* sonar pulse rings */
+    .sonar {
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      pointer-events: none;
+    }
+    .sonar-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(0,201,167,0.15);
+      animation: sonarPulse 4s ease-out infinite;
+    }
+    .sonar-ring:nth-child(2) { animation-delay: 1.3s; }
+    .sonar-ring:nth-child(3) { animation-delay: 2.6s; }
+    @keyframes sonarPulse {
+      0%   { transform: scale(0.1); opacity: 0.8; }
+      100% { transform: scale(1);   opacity: 0; }
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.2rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.4s;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--teal);
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--mist);
+      max-width: 540px;
+      line-height: 1.65;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.6s;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.8s;
+    }
+
+    .email-form {
+      display: flex;
+      gap: 0;
+      background: rgba(15,32,64,0.8);
+      border: 1px solid rgba(0,201,167,0.25);
+      border-radius: 100px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s;
+    }
+    .email-form:focus-within {
+      border-color: rgba(0,201,167,0.6);
+      box-shadow: 0 0 0 3px rgba(0,201,167,0.08);
+    }
+    .email-form input {
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 14px 24px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      width: 280px;
+    }
+    .email-form input::placeholder { color: var(--fog); }
+    .btn-notify {
+      background: var(--teal);
+      color: var(--navy);
+      border: none;
+      padding: 14px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 100px;
+      margin: 4px;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .btn-notify:hover { background: #00e8c0; transform: scale(1.02); }
+    .btn-notify:active { transform: scale(0.98); }
+
+    .hero-note {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--fog);
+      letter-spacing: 0.04em;
+    }
+
+    /* coming soon badge */
+    .coming-soon-badge {
+      position: absolute;
+      top: 140px;
+      right: clamp(24px, 5vw, 80px);
+      width: 110px;
+      height: 110px;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1.2s, spin 30s linear infinite 2s;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .coming-soon-badge svg { width: 100%; height: 100%; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,201,167,0.2), transparent);
+      margin: 0;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 120px 24px;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: -0.02em;
+      margin-bottom: 80px;
+      color: var(--white);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2px;
+      background: rgba(0,201,167,0.06);
+      border: 1px solid rgba(0,201,167,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .feature-card {
+      background: var(--deep);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .feature-card:hover { background: var(--surface); }
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--teal), transparent);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+    .feature-card:hover::after { transform: scaleX(1); }
+
+    .feature-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--teal-dim);
+      letter-spacing: 0.15em;
+      margin-bottom: 20px;
+    }
+    .feature-icon {
+      font-size: 2.4rem;
+      margin-bottom: 20px;
+      display: block;
+      filter: drop-shadow(0 0 12px rgba(0,201,167,0.3));
+    }
+    .feature-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+    .feature-desc {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--mist);
+      font-weight: 300;
+    }
+    .feature-tag {
+      display: inline-block;
+      margin-top: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--teal);
+      background: rgba(0,201,167,0.08);
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1px solid rgba(0,201,167,0.15);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      padding: 120px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 28px;
+      top: 20px;
+      bottom: 20px;
+      width: 1px;
+      background: linear-gradient(180deg, var(--teal), rgba(0,201,167,0.1));
+    }
+    .step {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      padding: 36px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .step.visible { opacity: 1; transform: translateX(0); }
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid rgba(0,201,167,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--teal);
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 20px rgba(0,201,167,0.1);
+    }
+    .step-content { padding-top: 12px; }
+    .step-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .step-desc {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--mist);
+      font-weight: 300;
+    }
+
+    /* ── MAP TEASER ── */
+    .map-teaser {
+      padding: 80px 24px 120px;
+      text-align: center;
+    }
+    .map-frame {
+      max-width: 900px;
+      margin: 60px auto 0;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(0,201,167,0.15);
+      box-shadow:
+        0 0 0 1px rgba(0,201,167,0.05),
+        0 40px 80px rgba(0,0,0,0.6),
+        0 0 60px rgba(0,201,167,0.05);
+      position: relative;
+    }
+    .map-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, var(--navy) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+    /* simulated map UI */
+    .fake-map {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background:
+        radial-gradient(ellipse 60% 60% at 40% 55%, rgba(0,40,80,0.9) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 40% at 70% 30%, rgba(0,25,60,0.8) 0%, transparent 60%),
+        linear-gradient(135deg, #061428 0%, #0a1e3a 40%, #082a40 70%, #061020 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* depth contour lines */
+    .fake-map::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-radial-gradient(ellipse 65% 45% at 42% 55%, transparent 30px, rgba(0,120,100,0.06) 31px, transparent 32px, transparent 55px, rgba(0,120,100,0.05) 56px, transparent 57px, transparent 85px, rgba(0,120,100,0.04) 86px, transparent 87px);
+    }
+
+    /* water shimmer */
+    .fake-map::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -35deg,
+        transparent 0px,
+        transparent 18px,
+        rgba(255,255,255,0.012) 18px,
+        rgba(255,255,255,0.012) 19px
+      );
+    }
+
+    .map-pins {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    .map-pin {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transform: translateY(0);
+      animation: pinBob 3s ease-in-out infinite;
+    }
+    .map-pin:nth-child(2) { animation-delay: 0.8s; }
+    .map-pin:nth-child(3) { animation-delay: 1.6s; }
+    .map-pin:nth-child(4) { animation-delay: 2.4s; }
+    @keyframes pinBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .pin-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .pin-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .pin-dot span { transform: rotate(45deg); display: block; }
+    .pin-label {
+      margin-top: 6px;
+      background: rgba(6,14,26,0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+      color: var(--white);
+    }
+    .pin-score {
+      font-size: 0.55rem;
+      color: var(--teal);
+      margin-top: 1px;
+    }
+
+    /* pin positions */
+    .map-pin:nth-child(1) { top: 28%; left: 33%; }
+    .map-pin:nth-child(2) { top: 48%; left: 55%; }
+    .map-pin:nth-child(3) { top: 35%; left: 68%; }
+    .map-pin:nth-child(4) { top: 60%; left: 25%; }
+
+    .pin-green  .pin-dot { background: linear-gradient(135deg, #00c9a7, #007a65); }
+    .pin-yellow .pin-dot { background: linear-gradient(135deg, #f4a022, #b86a00); }
+    .pin-red    .pin-dot { background: linear-gradient(135deg, #e05050, #8a1515); }
+    .pin-green2 .pin-dot { background: linear-gradient(135deg, #00c9a7, #007a65); }
+
+    /* HUD overlay */
+    .map-hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 3;
+      background: rgba(6,14,26,0.85);
+      border: 1px solid rgba(0,201,167,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      backdrop-filter: blur(12px);
+    }
+    .hud-line {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--fog);
+      line-height: 1.8;
+    }
+    .hud-line strong { color: var(--teal); }
+
+    .map-hud-nav {
+      position: absolute;
+      bottom: 60px;
+      right: 16px;
+      z-index: 3;
+      background: rgba(6,14,26,0.85);
+      border: 1px solid rgba(244,160,34,0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      backdrop-filter: blur(12px);
+      text-align: right;
+    }
+    .hud-nav-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+    .hud-nav-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--white);
+      line-height: 1;
+    }
+    .hud-nav-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--fog);
+      margin-top: 2px;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      padding: 80px 24px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .stats-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 48px;
+      text-align: center;
+    }
+    .stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--teal);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--fog);
+      letter-spacing: 0.05em;
+    }
+    .stat-note {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--teal-dim);
+      margin-top: 4px;
+    }
+
+    /* ── COMING SOON BANNER ── */
+    .launch-section {
+      padding: 120px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .launch-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,201,167,0.05) 0%, transparent 70%);
+    }
+    .launch-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,201,167,0.08);
+      border: 1px solid rgba(0,201,167,0.25);
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--teal);
+      margin-bottom: 40px;
+    }
+    .launch-pill .dot {
+      width: 7px; height: 7px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    .launch-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .launch-title span { color: var(--teal); font-style: italic; }
+    .launch-sub {
+      font-size: 1rem;
+      color: var(--mist);
+      max-width: 480px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* countdown */
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+    }
+    .countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .countdown-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1;
+      min-width: 80px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid rgba(0,201,167,0.1);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--fog);
+      text-transform: uppercase;
+    }
+    .countdown-sep {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--teal-dim);
+      padding-top: 10px;
+      opacity: 0.5;
+      align-self: flex-start;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--mist);
+    }
+    .footer-url {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--fog);
+    }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--fog);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-url { display: none; }
+      .email-form input { width: 180px; }
+      .coming-soon-badge { display: none; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="water-bg"></div>
+<div class="grain"></div>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <img src="catchiq_logo.svg" alt="CatchIQ" style="height:38px;width:auto;display:block;">
+    </div>
+    <div class="nav-url">catchiq.fishing</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="sonar">
+      <div class="sonar-ring"></div>
+      <div class="sonar-ring"></div>
+      <div class="sonar-ring"></div>
+    </div>
+
+    <!-- coming soon spinning badge -->
+    <div class="coming-soon-badge" aria-hidden="true">
+      <svg viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="55" cy="55" r="50" stroke="rgba(0,201,167,0.15)" stroke-width="1"/>
+        <path id="textCircle" d="M55,55 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0" fill="none"/>
+        <text font-family="DM Mono, monospace" font-size="9.5" fill="#00c9a7" letter-spacing="3.8">
+          <textPath href="#textCircle">COMING SOON · 2027 · CATCHIQ ·</textPath>
+        </text>
+        <!-- Mini fish icon from logo, centered -->
+        <ellipse cx="55" cy="55" rx="14" ry="7" fill="#00c9a7" opacity="0.95"/>
+        <polygon points="41,55 35,49 35,61" fill="#00c9a7" opacity="0.9"/>
+        <circle cx="64" cy="53" r="2" fill="#0a1628"/>
+        <circle cx="64" cy="53" r="1.1" fill="#ffffff" opacity="0.95"/>
+        <!-- gold signal arcs -->
+        <path d="M61,46 Q66,41 71,46" fill="none" stroke="#f5a623" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+        <path d="M59,43 Q66,37 73,43" fill="none" stroke="#f5a623" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+
+    <p class="hero-eyebrow">Introducing CatchIQ</p>
+
+    <!-- Hero logo -->
+    <div style="margin-bottom:32px;opacity:0;animation:fadeUp 0.8s ease forwards 0.3s;">
+      <img src="catchiq_logo.svg" alt="CatchIQ — Fish Smarter. Every Cast, Every Time."
+           style="width:min(480px,82vw);height:auto;display:block;margin:0 auto;
+                  filter:drop-shadow(0 0 32px rgba(0,201,167,0.18));">
+    </div>
+
+    <h1 class="hero-title">
+      Fish <em>Smarter.</em><br>Navigate Better.
+    </h1>
+
+    <p class="hero-sub">
+      The intelligent fishing companion that logs your catches, reads the conditions, shows you exactly where to go — and navigates you there.
+    </p>
+
+    <div class="hero-cta-group">
+      <div class="email-form">
+        <input type="email" id="heroEmail" placeholder="your@email.com" autocomplete="email">
+        <button class="btn-notify" onclick="handleNotify()">Notify Me</button>
+      </div>
+      <p class="hero-note" id="heroMsg">Be first to know when we launch.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stats-inner">
+      <div class="reveal">
+        <div class="stat-val">55M+</div>
+        <div class="stat-label">Anglers in the US</div>
+        <div class="stat-note">who deserve better tools</div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="stat-val">0</div>
+        <div class="stat-label">Manual data entry required</div>
+        <div class="stat-note">everything is automatic</div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="stat-val">74%</div>
+        <div class="stat-label">Catch probability score</div>
+        <div class="stat-note">powered by your own data</div>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="stat-val">1</div>
+        <div class="stat-label">App for it all</div>
+        <div class="stat-note">AI · charts · nav · predictions</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label reveal">Core Features</p>
+    <h2 class="section-title reveal">Everything you need.<br>Nothing you don't.</h2>
+
+    <div class="features-grid">
+
+      <div class="feature-card reveal">
+        <div class="feature-num">01</div>
+        <span class="feature-icon">📷</span>
+        <h3 class="feature-title">Instant Catch Logging</h3>
+        <p class="feature-desc">Photograph your catch. CatchIQ reads the GPS, time, and date from the photo automatically — then AI identifies the species, estimates the length and weight, and pins it to the chart. Zero manual entry.</p>
+        <span class="feature-tag">On-device AI · EXIF extraction</span>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-num">02</div>
+        <span class="feature-icon">🌊</span>
+        <h3 class="feature-title">Environmental Auto-Capture</h3>
+        <p class="feature-desc">Every catch is permanently paired with the exact conditions that produced it — tide phase, barometric pressure trend, wind, solunar score, moon phase. All fetched automatically. No apps to switch between.</p>
+        <span class="feature-tag">Weather · Tides · Solunar</span>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-num">03</div>
+        <span class="feature-icon">🗺️</span>
+        <h3 class="feature-title">Nautical Maps & Navigation</h3>
+        <p class="feature-desc">Interactive nautical charts with NOAA depth contours, live tide overlays, and solunar heat zones. Navigate from your position to any saved spot by water bearing or road. Full offline capability — no signal needed on the water.</p>
+        <span class="feature-tag">Mapbox · NOAA charts · Offline</span>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-num">04</div>
+        <span class="feature-icon">📍</span>
+        <h3 class="feature-title">Smart Spot Management</h3>
+        <p class="feature-desc">Mark, name, and organise your fishing spots directly on the chart. One tap saves your current GPS position. Share coordinates with a friend via a deep link. Your spots stay private by default — cloud synced, always available.</p>
+        <span class="feature-tag">GPS · Sharing · Offline sync</span>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-num">05</div>
+        <span class="feature-icon">📊</span>
+        <h3 class="feature-title">Catch History & Analytics</h3>
+        <p class="feature-desc">Your complete fishing journal, visualised. Species breakdowns, personal records, catch density heat maps, pattern analysis. See your best spots ranked by catch rate — and the conditions that made them great.</p>
+        <span class="feature-tag">Stats · Heat maps · Records</span>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-num">06</div>
+        <span class="feature-icon">🎯</span>
+        <h3 class="feature-title">Predictive Catch Intelligence</h3>
+        <p class="feature-desc">Pick any future date. CatchIQ scores the forecast conditions against your personal catch history and returns a probability score for each saved spot — colour-coded on the map. The model gets sharper with every trip.</p>
+        <span class="feature-tag">ML predictions · Spatial scores</span>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MAP TEASER -->
+  <section class="map-teaser">
+    <p class="section-label reveal">The Prediction Map</p>
+    <h2 class="section-title reveal">See where to fish.<br><em style="font-style:italic;color:var(--teal)">Before you leave the dock.</em></h2>
+
+    <div class="map-frame reveal">
+      <div class="fake-map">
+        <!-- HUD top-left -->
+        <div class="map-hud">
+          <div class="hud-line"><strong>SAT MAR 15 2026</strong></div>
+          <div class="hud-line">Tide ↑ Incoming · 4.2 ft</div>
+          <div class="hud-line">Pressure ↘ 29.91 inHg</div>
+          <div class="hud-line">🌙 Major solunar · 6:15 AM</div>
+        </div>
+        <!-- Nav HUD bottom-right -->
+        <div class="map-hud-nav">
+          <div class="hud-nav-label">NAVIGATING TO</div>
+          <div class="hud-nav-val">Spot B</div>
+          <div class="hud-nav-sub">247° SW · 1.4 nm · 4 min</div>
+        </div>
+        <!-- Pins -->
+        <div class="map-pins">
+          <div class="map-pin pin-green">
+            <div class="pin-dot"><span>A</span></div>
+            <div class="pin-label">Spot A<div class="pin-score">74% ▲ HIGH</div></div>
+          </div>
+          <div class="map-pin pin-green2">
+            <div class="pin-dot"><span>★</span></div>
+            <div class="pin-label">Spot B — Best Today<div class="pin-score">81% ▲ HIGH</div></div>
+          </div>
+          <div class="map-pin pin-yellow">
+            <div class="pin-dot"><span>C</span></div>
+            <div class="pin-label">Spot C<div class="pin-score">52% → MED</div></div>
+          </div>
+          <div class="map-pin pin-red">
+            <div class="pin-dot"><span>D</span></div>
+            <div class="pin-label">Spot D<div class="pin-score">31% ↓ LOW</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <p class="section-label reveal">How It Works</p>
+    <h2 class="section-title reveal">From photo to prediction<br>in one app.</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3 class="step-title">Photograph Your Catch</h3>
+          <p class="step-desc">Take a photo of any fish. CatchIQ reads the EXIF metadata to extract the exact time and GPS location, identifies the species with on-device AI, and estimates length and weight — all in under 60 seconds, with no manual input.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3 class="step-title">Conditions Are Captured Automatically</h3>
+          <p class="step-desc">As each catch is logged, CatchIQ fetches the tide state, weather snapshot, moon phase, and solunar score for that exact location and moment. The catch pin appears on your nautical chart, surrounded by the conditions that produced it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3 class="step-title">Patterns Emerge</h3>
+          <p class="step-desc">Your personal catch history builds a dataset unique to you and your spots. The analytics dashboard surfaces patterns — which tides, pressures, and moon phases your best catches share. The heat map shows where the action concentrates.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3 class="step-title">Pick a Date. See the Map.</h3>
+          <p class="step-desc">Select any future date and the prediction map lights up — every saved spot shows a colour-coded probability score based on forecast conditions matched against your historical data. Tap the best spot. Navigate there.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- COMING SOON -->
+  <section class="launch-section">
+    <div class="launch-pill">
+      <span class="dot"></span>
+      COMING 2027
+    </div>
+
+    <!-- Logo in launch section -->
+    <div class="reveal" style="margin-bottom:36px;">
+      <img src="catchiq_logo.svg" alt="CatchIQ"
+           style="width:min(360px,70vw);height:auto;display:block;margin:0 auto;
+                  opacity:0.9;filter:drop-shadow(0 0 24px rgba(0,201,167,0.15));">
+    </div>
+
+    <h2 class="launch-title reveal">
+      Launch is<br><span>coming soon.</span>
+    </h2>
+    <p class="launch-sub reveal">
+      CatchIQ is in active development. Join the waitlist and be the first to get access when we open beta testing — and help shape the app with your feedback.
+    </p>
+
+    <div class="countdown reveal" id="countdown">
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-days">--</div>
+        <div class="countdown-label">Days</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-hours">--</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-mins">--</div>
+        <div class="countdown-label">Minutes</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-secs">--</div>
+        <div class="countdown-label">Seconds</div>
+      </div>
+    </div>
+
+    <div class="email-form reveal" style="display:inline-flex; margin: 0 auto;">
+      <input type="email" id="footerEmail" placeholder="your@email.com" autocomplete="email">
+      <button class="btn-notify" onclick="handleNotifyFooter()">Join Waitlist</button>
+    </div>
+    <p class="hero-note" id="footerMsg" style="margin-top:14px;">Early access. No spam. Unsubscribe anytime.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <img src="catchiq_logo.svg" alt="CatchIQ" style="height:44px;width:auto;display:block;opacity:0.85;">
+    </div>
+    <div class="footer-tagline" style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.85rem;color:var(--fog);">Fish Smarter. Every Cast, Every Time.</div>
+    <div class="footer-url">catchiq.fishing</div>
+    <div class="footer-copy"><a href="/cdn-cgi/l/email-protection#4426212a04272530272c2d356a222d372c2d2a23" style="color:var(--fog);text-decoration:none;"><span class="__cf_email__" data-cfemail="9cfef9f2dcfffde8fff4f5edb2faf5eff4f5f2fb">[email&#160;protected]</span></a> &nbsp;·&nbsp; © 2027 CatchIQ. All rights reserved.</div>
+  </footer>
+
+</div><!-- .page -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ── SCROLL REVEAL ─────────────────────────────────────────
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // step reveal with delay
+  const stepObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 120);
+        stepObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.step').forEach(el => stepObserver.observe(el));
+
+  // ── COUNTDOWN ─────────────────────────────────────────────
+  // Target: September 1, 2026
+  const launchDate = new Date('2027-03-01T09:00:00');
+
+  function updateCountdown() {
+    const now  = new Date();
+    const diff = launchDate - now;
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML =
+        '<div style="font-family:Playfair Display,serif;font-size:2rem;color:var(--teal)">🎉 We\'re Live!</div>';
+      return;
+    }
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000) / 60000);
+    const secs  = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+    document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ── EMAIL HANDLERS ────────────────────────────────────────
+  function handleNotify() {
+    const input = document.getElementById('heroEmail');
+    const msg   = document.getElementById('heroMsg');
+    const val   = input.value.trim();
+    if (!val || !val.includes('@')) {
+      input.style.borderRight = '2px solid #e05050';
+      setTimeout(() => input.style.borderRight = '', 1200);
+      return;
+    }
+    // Open mailto so the signup lands in ben@catchiq.fishing inbox
+    window.location.href = `mailto:ben@catchiq.fishing?subject=CatchIQ%20Waitlist&body=Please%20add%20me%20to%20the%20CatchIQ%20waitlist%3A%20${encodeURIComponent(val)}`;
+    msg.textContent = "✓ You're on the list! We'll be in touch.";
+    msg.style.color = 'var(--teal)';
+    input.value = '';
+    input.disabled = true;
+    document.querySelector('.btn-notify').textContent = '✓ Joined';
+    document.querySelector('.btn-notify').style.background = 'var(--teal-dim)';
+  }
+
+  function handleNotifyFooter() {
+    const input = document.getElementById('footerEmail');
+    const msg   = document.getElementById('footerMsg');
+    const val   = input.value.trim();
+    if (!val || !val.includes('@')) {
+      input.style.color = '#e05050';
+      setTimeout(() => input.style.color = '', 1200);
+      return;
+    }
+    // Open mailto so the signup lands in ben@catchiq.fishing inbox
+    window.location.href = `mailto:ben@catchiq.fishing?subject=CatchIQ%20Waitlist&body=Please%20add%20me%20to%20the%20CatchIQ%20waitlist%3A%20${encodeURIComponent(val)}`;
+    msg.textContent = "✓ You're on the list! We'll be in touch.";
+    msg.style.color = 'var(--teal)';
+    input.value = '';
+    input.disabled = true;
+    document.querySelectorAll('.btn-notify')[1].textContent = '✓ Joined';
+    document.querySelectorAll('.btn-notify')[1].style.background = 'var(--teal-dim)';
+  }
+
+  // enter key on email inputs
+  document.getElementById('heroEmail')
