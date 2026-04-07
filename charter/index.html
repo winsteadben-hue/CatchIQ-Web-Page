@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charter Catch Log — CatchIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+      --accent:  #1E6FD9; /* overridden by page data */
+    }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--deep);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 28px 24px 24px;
+      text-align: center;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+    .header-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      object-fit: cover;
+      display: none; /* shown when logo_url is set */
+    }
+    .header-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: var(--white);
+    }
+    .header-tagline {
+      color: var(--mist);
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+    .powered-by {
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--fog);
+    }
+    .powered-by a { color: var(--teal); text-decoration: none; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-cell {
+      flex: 1;
+      min-width: 120px;
+      padding: 18px 20px;
+      background: var(--deep);
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 3px;
+    }
+
+    /* ── Catch grid ── */
+    .section-header {
+      padding: 28px 20px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .catch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      padding: 0 16px 40px;
+    }
+    .catch-card {
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.15s;
+    }
+    .catch-card:hover { transform: translateY(-2px); }
+    .catch-thumb {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      background: var(--deep);
+    }
+    .catch-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .catch-info {
+      padding: 12px;
+    }
+    .catch-species {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--white);
+    }
+    .catch-meta {
+      margin-top: 5px;
+      display: flex;
+      gap: 10px;
+      font-size: 0.78rem;
+      color: var(--mist);
+      font-family: 'DM Mono', monospace;
+    }
+    .catch-date {
+      font-size: 0.72rem;
+      color: var(--fog);
+      margin-top: 4px;
+    }
+
+    /* ── Loading / error ── */
+    .state-msg {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--fog);
+    }
+    .state-msg h2 { font-size: 1.2rem; margin-bottom: 8px; color: var(--mist); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.75rem;
+      color: var(--fog);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    footer a { color: var(--teal); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div id="loading" class="state-msg">
+    <h2>Loading…</h2>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="header">
+      <div class="header-brand">
+        <img id="header-logo" class="header-logo" alt="Charter logo">
+        <span id="header-name" class="header-name"></span>
+      </div>
+      <div id="header-tagline" class="header-tagline"></div>
+      <div class="powered-by">Catch log powered by <a href="https://catchiq.fishing">CatchIQ</a></div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-cell">
+        <div id="stat-total" class="stat-value">—</div>
+        <div class="stat-label">Total Catches</div>
+      </div>
+      <div class="stat-cell">
+        <div id="stat-species" class="stat-value">—</div>
+        <div class="stat-label">Species</div>
+      </div>
+      <div class="stat-cell">
+        <div id="stat-biggest-lb" class="stat-value">—</div>
+        <div class="stat-label">Biggest (lb)</div>
+      </div>
+      <div class="stat-cell">
+        <div id="stat-biggest-in" class="stat-value">—</div>
+        <div class="stat-label">Biggest (in)</div>
+      </div>
+    </div>
+
+    <div class="section-header">Recent Catches</div>
+    <div id="catch-grid" class="catch-grid"></div>
+  </div>
+
+  <div id="error" class="state-msg" style="display:none">
+    <h2>Page not found</h2>
+    <p>This charter page doesn't exist or has been taken offline.</p>
+  </div>
+
+  <footer>
+    <a href="https://catchiq.fishing">CatchIQ</a> — Fish Smarter. Navigate Better.
+  </footer>
+
+<script>
+  const API = 'https://api.catchiq.fishing';
+
+  // Read ?id=slug from URL
+  const slug = new URLSearchParams(window.location.search).get('id');
+
+  if (!slug) {
+    showError();
+  } else {
+    fetch(`${API}/api/v1/public/charter/${encodeURIComponent(slug)}`)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(render)
+      .catch(() => showError());
+  }
+
+  function render(data) {
+    const { page, stats, catches } = data;
+
+    // Apply accent color
+    if (page.accentColor) {
+      document.documentElement.style.setProperty('--accent', page.accentColor);
+    }
+
+    // Header
+    document.title = `${page.displayName} — CatchIQ`;
+    document.getElementById('header-name').textContent = page.displayName;
+    if (page.tagline) {
+      document.getElementById('header-tagline').textContent = page.tagline;
+    }
+    if (page.logoUrl) {
+      const logo = document.getElementById('header-logo');
+      logo.src = page.logoUrl;
+      logo.style.display = 'block';
+    }
+
+    // Stats
+    document.getElementById('stat-total').textContent   = stats.total_catches ?? '0';
+    document.getElementById('stat-species').textContent = stats.species_count  ?? '0';
+    document.getElementById('stat-biggest-lb').textContent = stats.biggest_weight
+      ? parseFloat(stats.biggest_weight).toFixed(1) : '—';
+    document.getElementById('stat-biggest-in').textContent = stats.biggest_length
+      ? parseFloat(stats.biggest_length).toFixed(1) : '—';
+
+    // Catches
+    const grid = document.getElementById('catch-grid');
+    if (!catches.length) {
+      grid.innerHTML = '<p style="color:var(--fog);padding:20px">No catches recorded yet.</p>';
+    } else {
+      grid.innerHTML = catches.map(c => `
+        <div class="catch-card">
+          ${c.thumbnail_url
+            ? `<img class="catch-thumb" src="${esc(c.thumbnail_url)}" alt="${esc(c.species)}" loading="lazy">`
+            : `<div class="catch-thumb-placeholder">🐟</div>`}
+          <div class="catch-info">
+            <div class="catch-species">${esc(c.species || 'Unknown Species')}</div>
+            <div class="catch-meta">
+              ${c.length_in ? `<span>${parseFloat(c.length_in).toFixed(1)}"</span>` : ''}
+              ${c.weight_lb ? `<span>${parseFloat(c.weight_lb).toFixed(1)} lb</span>` : ''}
+            </div>
+            <div class="catch-date">${formatDate(c.caught_at)}</div>
+          </div>
+        </div>`).join('');
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  function showError() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+</script>
+</body>
+</html>
