@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — CatchIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --teal-dim:#007a65;
+      --amber:   #f5a623;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── WATER BACKGROUND ── */
+    .water-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .water-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 60% at 20% 80%, rgba(0,201,167,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 80% at 80% 20%, rgba(0,80,160,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 50% at 50% 100%, rgba(0,20,60,0.8) 0%, transparent 70%);
+    }
+    .water-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 80px,
+        rgba(0,201,167,0.018) 80px,
+        rgba(0,201,167,0.018) 81px
+      );
+      animation: driftLines 20s linear infinite;
+    }
+    @keyframes driftLines {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(81px); }
+    }
+
+    /* ── LAYOUT ── */
+    .page { position: relative; z-index: 2; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(6,14,26,0.95) 0%, rgba(6,14,26,0) 100%);
+      backdrop-filter: blur(2px);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--fog);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-links a.active { color: var(--teal); }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 24px 100px;
+    }
+
+    .page-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 48px;
+    }
+
+    .lead {
+      font-size: 1.15rem;
+      line-height: 1.75;
+      color: var(--mist);
+      margin-bottom: 64px;
+      font-weight: 300;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, var(--teal), transparent);
+      margin: 64px 0;
+      opacity: 0.25;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--mist);
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2px;
+      background: rgba(0,201,167,0.06);
+      border: 1px solid rgba(0,201,167,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 40px 0 64px;
+    }
+    .value-card {
+      background: var(--deep);
+      padding: 36px 32px;
+    }
+    .value-icon { font-size: 1.8rem; margin-bottom: 14px; display: block; }
+    .value-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+    .value-desc {
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: var(--mist);
+      font-weight: 300;
+    }
+
+    .contact-block {
+      background: var(--deep);
+      border: 1px solid rgba(0,201,167,0.12);
+      border-radius: 16px;
+      padding: 40px;
+      margin-top: 40px;
+    }
+    .contact-block h2 { margin-bottom: 16px; }
+    .contact-block p { margin-bottom: 12px; }
+    .contact-block a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .contact-block a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 48px 32px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--fog);
+    }
+    .footer-copy a { color: var(--fog); text-decoration: none; }
+    .footer-copy a:hover { color: var(--teal); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      footer { padding: 32px 24px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="water-bg"></div>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/">
+      <img src="catchiq_logo.svg" alt="CatchIQ" style="height:38px;width:auto;display:block;">
+    </a>
+    <div class="nav-links">
+      <a href="/about.html" class="active">About</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:ben@catchiq.fishing">Contact</a>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <p class="page-eyebrow">About CatchIQ</p>
+    <h1 class="page-title">Built by anglers,<br>for anglers.</h1>
+
+    <p class="lead">
+      CatchIQ is an intelligent fishing companion that helps recreational and competitive anglers log catches, read conditions, find their best spots, and run tournaments — all in one app. We believe every angler deserves access to the kind of data and decision support that used to require a team of guides and years of local knowledge.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>Our Mission</h2>
+    <p>
+      We're building the most useful fishing app on the market — one that works as hard as you do. Not a simple logbook. Not a weather overlay. A fully integrated intelligence layer that combines your personal catch history with real-time environmental data to tell you where to fish, when to go, and how to get there.
+    </p>
+    <p>
+      CatchIQ captures tide phase, barometric pressure, solunar periods, moon phase, and wind automatically — at the moment of every catch. Over time, your data becomes a predictive model unique to you and your water. Pick any future date and the map shows you probability scores for every spot you've ever fished.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>What We Value</h2>
+
+    <div class="value-grid">
+      <div class="value-card">
+        <span class="value-icon">🎯</span>
+        <div class="value-title">Precision Over Clutter</div>
+        <p class="value-desc">Every feature earns its place. We don't add things because they sound good — we add them because anglers on the water told us they needed them.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🔒</span>
+        <div class="value-title">Your Data Stays Yours</div>
+        <p class="value-desc">Your spots, catches, and history are private by default. We do not sell personal data or fishing location data to any third party.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">✅</span>
+        <div class="value-title">Fair Competition</div>
+        <p class="value-desc">TrueCatch — our automated catch verification system — ensures tournament catches are legitimate. Seven validation layers. No manual disputes.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">📡</span>
+        <div class="value-title">Works Offline</div>
+        <p class="value-desc">Nautical charts, saved spots, and your catch log are fully accessible without a cell signal. Because the best fishing spots rarely have great reception.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>Tournament Platform</h2>
+    <p>
+      CatchIQ includes a full tournament management platform for clubs, guides, and competitive anglers. Organizers can create tournaments, invite anglers by email, collect entry fees securely via Stripe, and run a live scoreboard — all without leaving the app.
+    </p>
+    <p>
+      Invited anglers receive an email with a payment link. Once they pay, they're automatically registered and can begin submitting catches within the tournament window. All catches go through TrueCatch verification before appearing on the scoreboard.
+    </p>
+    <p>
+      CatchIQ sends tournament invite emails on behalf of organizers through our secure, AWS-hosted email infrastructure. These emails are sent only to anglers who have been explicitly added to a tournament roster by the organizer.
+    </p>
+
+    <div class="divider"></div>
+
+    <div class="contact-block">
+      <h2>Get in Touch</h2>
+      <p>CatchIQ is a small, independent company. We read every message we receive.</p>
+      <p>General inquiries: <a href="mailto:ben@catchiq.fishing">ben@catchiq.fishing</a></p>
+      <p>Support: <a href="mailto:support@catchiq.fishing">support@catchiq.fishing</a></p>
+      <p>Privacy questions: <a href="mailto:privacy@catchiq.fishing">privacy@catchiq.fishing</a></p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 CatchIQ. All rights reserved.</div>
+      <div class="footer-copy">
+        <a href="/privacy.html">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="/about.html">About</a>
+        &nbsp;·&nbsp;
+        catchiq.fishing
+      </div>
+    </div>
+  </footer>
+
+</div><!-- .page -->
+
+</body>
+</html>

@@ -118,6 +118,21 @@
       padding: 6px 14px;
       border-radius: 100px;
     }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--fog);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    @media (max-width: 600px) { .nav-links { display: none; } }
 
     /* ── HERO ── */
     .hero {
@@ -802,13 +817,124 @@
     .reveal-delay-3 { transition-delay: 0.3s; }
     .reveal-delay-4 { transition-delay: 0.4s; }
 
+    /* ── TOURNAMENT SECTION ── */
+    .tournament-section {
+      padding: 120px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .tournament-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2px;
+      background: rgba(0,201,167,0.06);
+      border: 1px solid rgba(0,201,167,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 60px;
+    }
+    .t-card {
+      background: var(--deep);
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .t-card-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--teal-dim);
+      letter-spacing: 0.15em;
+      margin-bottom: 18px;
+    }
+    .t-card-icon { font-size: 2rem; margin-bottom: 16px; display: block; }
+    .t-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+    .t-card-desc {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--mist);
+      font-weight: 300;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 48px 48px 32px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .footer-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+    .footer-brand {}
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--mist);
+      margin-bottom: 8px;
+    }
+    .footer-tagline-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.82rem;
+      color: var(--fog);
+    }
+    .footer-nav-group {
+      display: flex;
+      gap: 64px;
+      flex-wrap: wrap;
+    }
+    .footer-col h4 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--teal-dim);
+      margin-bottom: 14px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--fog);
+      text-decoration: none;
+      margin-bottom: 8px;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--teal); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--fog);
+    }
+    .footer-copy a { color: var(--fog); text-decoration: none; }
+    .footer-copy a:hover { color: var(--teal); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       nav { padding: 0 20px; }
       .nav-url { display: none; }
       .email-form input { width: 180px; }
       .coming-soon-badge { display: none; }
-      footer { flex-direction: column; text-align: center; }
+      footer { padding: 40px 24px 24px; }
+      .footer-top { flex-direction: column; }
+      .footer-bottom { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
@@ -824,7 +950,11 @@
     <div class="nav-logo">
       <img src="catchiq_logo.svg" alt="CatchIQ" style="height:38px;width:auto;display:block;">
     </div>
-    <div class="nav-url">catchiq.fishing</div>
+    <div class="nav-links">
+      <a href="/about.html">About</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:ben@catchiq.fishing">Contact</a>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -911,7 +1041,7 @@
   <div class="divider"></div>
 
   <!-- FEATURES -->
-  <section class="features">
+  <section class="features" id="features">
     <p class="section-label reveal">Core Features</p>
     <h2 class="section-title reveal">Everything you need.<br>Nothing you don't.</h2>
 
@@ -1054,11 +1184,60 @@
 
   <div class="divider"></div>
 
-  <!-- COMING SOON -->
+  <!-- TOURNAMENT INVITES -->
+  <div id="tournament" style="max-width:1000px;margin:0 auto;padding:0 24px;">
+    <section class="tournament-section" style="padding:120px 0;">
+      <p class="section-label reveal">For Tournament Organizers</p>
+      <h2 class="section-title reveal">Run your tournament<br>entirely in the app.</h2>
+
+      <div class="tournament-grid">
+        <div class="t-card reveal">
+          <div class="t-card-num">01</div>
+          <span class="t-card-icon">🏆</span>
+          <h3 class="t-card-title">Create &amp; Configure</h3>
+          <p class="t-card-desc">Set up your tournament with species rules, date window, entry fee, and scoring format — all from the Manage tab. No paperwork, no spreadsheets.</p>
+        </div>
+        <div class="t-card reveal reveal-delay-1">
+          <div class="t-card-num">02</div>
+          <span class="t-card-icon">✉️</span>
+          <h3 class="t-card-title">Invite Anglers by Email</h3>
+          <p class="t-card-desc">Add anglers one at a time or upload a CSV roster. Each invited angler receives a professional email with a secure payment link — no CatchIQ account required to pay entry.</p>
+        </div>
+        <div class="t-card reveal reveal-delay-2">
+          <div class="t-card-num">03</div>
+          <span class="t-card-icon">💳</span>
+          <h3 class="t-card-title">Entry Fees via Stripe</h3>
+          <p class="t-card-desc">Connect your Stripe account once. Entry fees go directly to your account at checkout — CatchIQ deducts a small $1.50 per-entry platform fee. No manual invoicing required.</p>
+        </div>
+        <div class="t-card reveal">
+          <div class="t-card-num">04</div>
+          <span class="t-card-icon">✅</span>
+          <h3 class="t-card-title">Auto-Registered on Payment</h3>
+          <p class="t-card-desc">When an angler completes checkout, they are automatically registered and marked as paid in your roster. No manual tracking. Live scoreboard updates in real time as catches come in.</p>
+        </div>
+        <div class="t-card reveal reveal-delay-1">
+          <div class="t-card-num">05</div>
+          <span class="t-card-icon">📸</span>
+          <h3 class="t-card-title">TrueCatch Verified Submissions</h3>
+          <p class="t-card-desc">Tournament catches go through TrueCatch — a 7-layer automated verification system. EXIF timestamps, GPS location, AI species recognition, and a measurement instrument check ensure every submission is clean and fair.</p>
+        </div>
+        <div class="t-card reveal reveal-delay-2">
+          <div class="t-card-num">06</div>
+          <span class="t-card-icon">📊</span>
+          <h3 class="t-card-title">Live Scoreboard</h3>
+          <p class="t-card-desc">A real-time scoreboard is available to all participants. Rankings update automatically. At the end of your tournament window, winners are clear — no manual tabulation needed.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- EARLY ACCESS -->
   <section class="launch-section">
     <div class="launch-pill">
       <span class="dot"></span>
-      COMING 2027
+      EARLY ACCESS — NOW AVAILABLE
     </div>
 
     <!-- Logo in launch section -->
@@ -1069,49 +1248,56 @@
     </div>
 
     <h2 class="launch-title reveal">
-      Launch is<br><span>coming soon.</span>
+      Early access<br><span>is open.</span>
     </h2>
     <p class="launch-sub reveal">
-      CatchIQ is in active development. Join the waitlist and be the first to get access when we open beta testing — and help shape the app with your feedback.
+      CatchIQ is live on iOS TestFlight and Android. Join the waitlist to receive your invite — and help shape the app with your feedback during beta.
     </p>
 
-    <div class="countdown reveal" id="countdown">
-      <div class="countdown-unit">
-        <div class="countdown-num" id="cd-days">--</div>
-        <div class="countdown-label">Days</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-unit">
-        <div class="countdown-num" id="cd-hours">--</div>
-        <div class="countdown-label">Hours</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-unit">
-        <div class="countdown-num" id="cd-mins">--</div>
-        <div class="countdown-label">Minutes</div>
-      </div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-unit">
-        <div class="countdown-num" id="cd-secs">--</div>
-        <div class="countdown-label">Seconds</div>
-      </div>
-    </div>
-
-    <div class="email-form reveal" style="display:inline-flex; margin: 0 auto;">
+    <div class="email-form reveal" style="display:inline-flex; margin: 0 auto 0;">
       <input type="email" id="footerEmail" placeholder="your@email.com" autocomplete="email">
-      <button class="btn-notify" onclick="handleNotifyFooter()">Join Waitlist</button>
+      <button class="btn-notify" onclick="handleNotifyFooter()">Request Access</button>
     </div>
-    <p class="hero-note" id="footerMsg" style="margin-top:14px;">Early access. No spam. Unsubscribe anytime.</p>
+    <p class="hero-note" id="footerMsg" style="margin-top:14px;">iOS &amp; Android. No spam. Unsubscribe anytime.</p>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-logo">
-      <img src="catchiq_logo.svg" alt="CatchIQ" style="height:44px;width:auto;display:block;opacity:0.85;">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div>
+          <img src="catchiq_logo.svg" alt="CatchIQ" style="height:40px;width:auto;display:block;opacity:0.85;margin-bottom:10px;">
+        </div>
+        <div class="footer-tagline-text">Fish Smarter. Every Cast, Every Time.</div>
+      </div>
+      <div class="footer-nav-group">
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="/about.html">About CatchIQ</a>
+          <a href="/privacy.html">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/#features">Features</a>
+          <a href="/#tournament">Tournaments</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:ben@catchiq.fishing">ben@catchiq.fishing</a>
+          <a href="mailto:support@catchiq.fishing">support@catchiq.fishing</a>
+        </div>
+      </div>
     </div>
-    <div class="footer-tagline" style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.85rem;color:var(--fog);">Fish Smarter. Every Cast, Every Time.</div>
-    <div class="footer-url">catchiq.fishing</div>
-    <div class="footer-copy"><a href="/cdn-cgi/l/email-protection#4426212a04272530272c2d356a222d372c2d2a23" style="color:var(--fog);text-decoration:none;"><span class="__cf_email__" data-cfemail="9cfef9f2dcfffde8fff4f5edb2faf5eff4f5f2fb">[email&#160;protected]</span></a> &nbsp;·&nbsp; © 2027 CatchIQ. All rights reserved.</div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 CatchIQ. All rights reserved.</div>
+      <div class="footer-copy">
+        <a href="/privacy.html">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="/about.html">About</a>
+        &nbsp;·&nbsp;
+        catchiq.fishing
+      </div>
+    </div>
   </footer>
 
 </div><!-- .page -->
@@ -1207,3 +1393,9 @@
 
   // enter key on email inputs
   document.getElementById('heroEmail')
+    .addEventListener('keydown', e => { if (e.key === 'Enter') handleNotify(); });
+  document.getElementById('footerEmail')
+    .addEventListener('keydown', e => { if (e.key === 'Enter') handleNotifyFooter(); });
+</script>
+</body>
+</html>

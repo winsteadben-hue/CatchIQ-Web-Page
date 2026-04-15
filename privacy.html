@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — CatchIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --teal-dim:#007a65;
+      --amber:   #f5a623;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── WATER BACKGROUND ── */
+    .water-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .water-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 60% at 20% 80%, rgba(0,201,167,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 80% at 80% 20%, rgba(0,80,160,0.12) 0%, transparent 60%);
+    }
+    .water-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 80px,
+        rgba(0,201,167,0.018) 80px,
+        rgba(0,201,167,0.018) 81px
+      );
+      animation: driftLines 20s linear infinite;
+    }
+    @keyframes driftLines {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(81px); }
+    }
+
+    /* ── LAYOUT ── */
+    .page { position: relative; z-index: 2; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(6,14,26,0.95) 0%, rgba(6,14,26,0) 100%);
+      backdrop-filter: blur(2px);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--fog);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-links a.active { color: var(--teal); }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 24px 100px;
+    }
+
+    .page-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .last-updated {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--fog);
+      margin-bottom: 56px;
+      letter-spacing: 0.04em;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, var(--teal), transparent);
+      margin: 56px 0;
+      opacity: 0.2;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 18px;
+      margin-top: 48px;
+      color: var(--white);
+    }
+
+    h2:first-of-type { margin-top: 0; }
+
+    p {
+      font-size: 0.93rem;
+      line-height: 1.85;
+      color: var(--mist);
+      margin-bottom: 18px;
+      font-weight: 300;
+    }
+
+    ul {
+      margin: 0 0 18px 20px;
+    }
+
+    li {
+      font-size: 0.93rem;
+      line-height: 1.85;
+      color: var(--mist);
+      font-weight: 300;
+      margin-bottom: 6px;
+    }
+
+    a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+
+    .highlight-box {
+      background: var(--deep);
+      border: 1px solid rgba(0,201,167,0.12);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 12px 12px 0;
+      padding: 24px 28px;
+      margin: 32px 0;
+    }
+    .highlight-box p { margin-bottom: 0; font-size: 0.9rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 48px 32px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--fog);
+    }
+    .footer-copy a { color: var(--fog); text-decoration: none; }
+    .footer-copy a:hover { color: var(--teal); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      footer { padding: 32px 24px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="water-bg"></div>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/">
+      <img src="catchiq_logo.svg" alt="CatchIQ" style="height:38px;width:auto;display:block;">
+    </a>
+    <div class="nav-links">
+      <a href="/about.html">About</a>
+      <a href="/privacy.html" class="active">Privacy</a>
+      <a href="mailto:ben@catchiq.fishing">Contact</a>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <p class="page-eyebrow">Legal</p>
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="last-updated">Last updated: April 15, 2025</p>
+
+    <div class="highlight-box">
+      <p>CatchIQ does not sell your personal data or your fishing location data to any third party. Your spots and catch history are private by default.</p>
+    </div>
+
+    <h2>1. Who We Are</h2>
+    <p>
+      CatchIQ ("we", "us", "our") is the operator of the CatchIQ mobile application and the website at catchiq.fishing. We provide an intelligent fishing companion app for recreational and competitive anglers. If you have questions about this policy, contact us at <a href="mailto:privacy@catchiq.fishing">privacy@catchiq.fishing</a>.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>2. Information We Collect</h2>
+
+    <p><strong style="color:var(--white);font-weight:500;">Information you provide directly:</strong></p>
+    <ul>
+      <li>Email address (for account creation and tournament invites)</li>
+      <li>Display name</li>
+      <li>Photos you submit as catch records</li>
+      <li>Fish species, size, weight, and notes you enter manually</li>
+      <li>Tournament roster information entered by an organizer on your behalf</li>
+    </ul>
+
+    <p><strong style="color:var(--white);font-weight:500;">Information collected automatically when you use the app:</strong></p>
+    <ul>
+      <li>GPS location at the time a catch is logged (extracted from photo EXIF data or device GPS)</li>
+      <li>Device type and operating system version</li>
+      <li>App version and session identifiers</li>
+      <li>Crash reports and error logs</li>
+    </ul>
+
+    <p><strong style="color:var(--white);font-weight:500;">Environmental data fetched on your behalf:</strong></p>
+    <ul>
+      <li>Tide phase and height (from NOAA / Stormglass)</li>
+      <li>Weather conditions: wind speed, barometric pressure, temperature</li>
+      <li>Solunar period and moon phase</li>
+    </ul>
+    <p>This data is fetched at your GPS location and stored as part of your catch record. It is not shared with third parties.</p>
+
+    <div class="divider"></div>
+
+    <h2>3. How We Use Your Information</h2>
+    <ul>
+      <li>To create and maintain your account</li>
+      <li>To log and store your catch records and fishing spots</li>
+      <li>To generate personalized catch predictions and analytics</li>
+      <li>To operate tournament features, including roster management and scoreboard display</li>
+      <li>To send tournament invite emails on behalf of organizers (to anglers they have added to a roster)</li>
+      <li>To send transactional emails related to your account (registration, password reset)</li>
+      <li>To detect and prevent fraud through our TrueCatch catch verification system</li>
+      <li>To improve the app based on aggregated, anonymized usage data</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <h2>4. Tournament Invite Emails</h2>
+    <p>
+      CatchIQ allows tournament organizers to invite anglers to competitions by email. When an organizer adds your email address to a tournament roster, you may receive an invitation email containing tournament details and a secure payment link.
+    </p>
+    <p>
+      These emails are sent through our AWS Simple Email Service (SES) infrastructure on behalf of the organizer. We do not send marketing emails to anglers who have only received a tournament invite — you will only receive further communications if you create a CatchIQ account or explicitly opt in.
+    </p>
+    <p>
+      If you believe you received an invite in error, contact us at <a href="mailto:support@catchiq.fishing">support@catchiq.fishing</a> and we will remove your address from the roster.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>5. Data Sharing</h2>
+    <p>We do not sell your personal data. We share information only in the following limited circumstances:</p>
+    <ul>
+      <li><strong style="color:var(--white);font-weight:500;">Service providers:</strong> We use AWS (hosting, email, file storage), Firebase (authentication), Stripe (payment processing), and Mapbox (mapping). Each operates under their own privacy policy.</li>
+      <li><strong style="color:var(--white);font-weight:500;">Tournament organizers:</strong> If you register for a tournament, the organizer can see your name, email, and submitted catches relevant to that tournament.</li>
+      <li><strong style="color:var(--white);font-weight:500;">Legal requirements:</strong> We may disclose information if required by law or to protect the rights and safety of CatchIQ and its users.</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <h2>6. Your Fishing Spots and Catch Locations</h2>
+    <p>
+      Your saved fishing spots and the GPS coordinates of your catch records are private by default. They are not shared with other users, indexed by search engines, or sold to any party including fishing tackle companies, guide services, or data brokers.
+    </p>
+    <p>
+      When you explicitly choose to share a spot using the in-app share feature, a one-time deep link is generated. Only the person you share it with receives the coordinates.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>7. Data Retention</h2>
+    <p>
+      We retain your account data and catch records for as long as your account is active. If you delete your account, we will delete your personal data within 30 days, except where retention is required by law (e.g., payment records).
+    </p>
+    <p>
+      Catch photos submitted through TrueCatch for tournament verification are retained for 90 days after the tournament closes, then deleted.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>8. Security</h2>
+    <p>
+      CatchIQ uses industry-standard security practices: HTTPS for all data in transit, encrypted storage for sensitive credentials, and authentication via Firebase. Payment processing is handled entirely by Stripe — CatchIQ never stores card numbers.
+    </p>
+    <p>
+      No method of transmission over the internet is 100% secure. We encourage you to use a strong, unique password for your account.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>9. Children's Privacy</h2>
+    <p>
+      CatchIQ is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, contact us at <a href="mailto:privacy@catchiq.fishing">privacy@catchiq.fishing</a>.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>10. Your Rights</h2>
+    <p>You have the right to:</p>
+    <ul>
+      <li>Access the personal data we hold about you</li>
+      <li>Request correction of inaccurate data</li>
+      <li>Request deletion of your account and data</li>
+      <li>Opt out of non-essential communications</li>
+    </ul>
+    <p>To exercise any of these rights, contact us at <a href="mailto:privacy@catchiq.fishing">privacy@catchiq.fishing</a>.</p>
+
+    <div class="divider"></div>
+
+    <h2>11. Changes to This Policy</h2>
+    <p>
+      We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date at the top of this page. For significant changes, we will notify users via the app or by email.
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>12. Contact</h2>
+    <p>
+      Questions about this policy: <a href="mailto:privacy@catchiq.fishing">privacy@catchiq.fishing</a><br>
+      General support: <a href="mailto:support@catchiq.fishing">support@catchiq.fishing</a>
+    </p>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 CatchIQ. All rights reserved.</div>
+      <div class="footer-copy">
+        <a href="/privacy.html">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="/about.html">About</a>
+        &nbsp;·&nbsp;
+        catchiq.fishing
+      </div>
+    </div>
+  </footer>
+
+</div><!-- .page -->
+
+</body>
+</html>
