@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Group — CatchIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --teal-dim:#007a65;
+      --amber:   #f5a623;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(6,14,26,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .nav-logo span { color: var(--teal); }
+
+    .card {
+      background: var(--deep);
+      border: 1px solid rgba(0,201,167,0.15);
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .fish-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+
+    .subtitle {
+      color: var(--mist);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .code-box {
+      background: var(--surface);
+      border: 1px solid rgba(0,201,167,0.25);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 32px;
+    }
+    .code-label {
+      font-size: 0.75rem;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .code-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      color: var(--teal);
+    }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 15px 24px;
+      background: var(--teal);
+      color: var(--navy);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #00e8c0; }
+
+    .btn-secondary {
+      display: block;
+      width: 100%;
+      padding: 13px 24px;
+      background: transparent;
+      color: var(--mist);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: var(--fog);
+      font-size: 0.8rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .no-app {
+      color: var(--fog);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+
+    .store-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    footer {
+      margin-top: 32px;
+      color: var(--fog);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+    footer a { color: var(--fog); text-decoration: none; }
+    footer a:hover { color: var(--teal); }
+
+    #status-msg {
+      font-size: 0.85rem;
+      color: var(--mist);
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    .no-code {
+      color: var(--mist);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="/">Catch<span>IQ</span></a>
+  </nav>
+
+  <div class="card" id="joinCard">
+    <div class="fish-icon">🎣</div>
+    <h1>You're invited!</h1>
+    <p class="subtitle">You've been invited to join a fishing group on CatchIQ.</p>
+
+    <div class="code-box">
+      <div class="code-label">Your invite code</div>
+      <div class="code-value" id="codeDisplay">——</div>
+    </div>
+
+    <a class="btn-primary" id="openAppBtn" href="#">Open in CatchIQ App</a>
+    <div id="status-msg"></div>
+
+    <div class="divider">Don't have the app?</div>
+
+    <p class="no-app">Download CatchIQ and enter the code above to join the group.</p>
+
+    <div class="store-buttons">
+      <a class="btn-secondary" href="https://testflight.apple.com/join/kcUuuRG4" target="_blank" rel="noopener">
+        📱 iOS — TestFlight
+      </a>
+      <a class="btn-secondary" href="https://play.google.com/store/apps/details?id=com.catchiq.app" target="_blank" rel="noopener">
+        🤖 Android
+      </a>
+    </div>
+  </div>
+
+  <div class="card" id="noCodeCard" style="display:none;">
+    <div class="fish-icon">🎣</div>
+    <h1>CatchIQ Groups</h1>
+    <p class="no-code">
+      This link appears to be missing an invite code.<br><br>
+      Ask the group owner to resend your invite, or download CatchIQ and enter your code manually.
+    </p>
+  </div>
+
+  <footer>
+    <a href="/">catchiq.fishing</a> &nbsp;·&nbsp;
+    <a href="/privacy.html">Privacy</a>
+  </footer>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+
+      if (!code) {
+        document.getElementById('joinCard').style.display = 'none';
+        document.getElementById('noCodeCard').style.display = 'block';
+        return;
+      }
+
+      // Show the code
+      document.getElementById('codeDisplay').textContent = code.toUpperCase();
+
+      // Build deep link
+      const deepLink = 'catchiq://join?code=' + encodeURIComponent(code);
+      const btn = document.getElementById('openAppBtn');
+      btn.href = deepLink;
+
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Try to open the app
+        window.location.href = deepLink;
+
+        // After a short delay, if still on this page, show hint
+        setTimeout(function () {
+          document.getElementById('status-msg').textContent =
+            'App not opening? Enter the code above manually after downloading.';
+        }, 1800);
+      });
+    })();
+  </script>
+
+</body>
+</html>
