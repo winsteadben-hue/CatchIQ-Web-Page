@@ -111,24 +111,6 @@
       color: var(--teal);
     }
 
-    .btn-primary {
-      display: block;
-      width: 100%;
-      padding: 15px 24px;
-      background: var(--teal);
-      color: var(--navy);
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 700;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      text-decoration: none;
-      margin-bottom: 12px;
-      transition: background 0.2s;
-    }
-    .btn-primary:hover { background: #00e8c0; }
-
     .btn-secondary {
       display: block;
       width: 100%;
@@ -182,13 +164,6 @@
     footer a { color: var(--fog); text-decoration: none; }
     footer a:hover { color: var(--teal); }
 
-    #status-msg {
-      font-size: 0.85rem;
-      color: var(--mist);
-      margin-top: 10px;
-      min-height: 20px;
-    }
-
     .no-code {
       color: var(--mist);
       font-size: 0.95rem;
@@ -212,12 +187,11 @@
       <div class="code-value" id="codeDisplay">——</div>
     </div>
 
-    <a class="btn-primary" id="openAppBtn" href="#">Join the Group</a>
-    <div id="status-msg"></div>
+    <p class="no-app">Open CatchIQ, go to <strong>Groups</strong>, tap <strong>Join a Group</strong>, and enter the code above.</p>
 
     <div class="divider">Don't have the app?</div>
 
-    <p class="no-app">Download CatchIQ and enter the code above to join the group.</p>
+    <p class="no-app">Download CatchIQ, then enter the code above to join the group.</p>
 
     <div class="store-buttons">
       <a class="btn-secondary" href="https://testflight.apple.com/join/kcUuuRG4" target="_blank" rel="noopener">
@@ -256,24 +230,6 @@
 
       // Show the code
       document.getElementById('codeDisplay').textContent = code.toUpperCase();
-
-      // Build deep link
-      const deepLink = 'catchiq://join?code=' + encodeURIComponent(code);
-      const btn = document.getElementById('openAppBtn');
-      btn.href = deepLink;
-
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        // Try to open the app
-        window.location.href = deepLink;
-
-        // After a short delay, if still on this page, show hint
-        setTimeout(function () {
-          document.getElementById('status-msg').textContent =
-            'App not opening? Enter the code above manually after downloading.';
-        }, 1800);
-      });
     })();
   </script>
 
