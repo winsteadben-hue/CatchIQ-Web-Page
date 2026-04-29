@@ -179,6 +179,35 @@
       font-family: 'DM Mono', monospace;
       margin-top: 2px;
     }
+    /* ── TrueCatch badge (web pill) ── */
+    .tc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #0A1628;
+      border-radius: 12px;
+      padding: 3px 8px 3px 5px;
+      margin-top: 6px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #E0F2FE;
+    }
+    .tc-badge-icon {
+      width: 14px;
+      height: 14px;
+      background: #0D9488;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tc-badge-icon::after {
+      content: '✓';
+      color: #E0F2FE;
+      font-size: 9px;
+      font-weight: 700;
+    }
 
     /* ── Roster table ── */
     .roster {
@@ -263,17 +292,20 @@
       </div>
       <div id="header-tagline" class="header-tagline"></div>
       <div id="last-updated" class="last-updated"></div>
+      <div id="scoring-method" class="last-updated" style="margin-top:2px"></div>
       <div class="powered-by">Scoreboard powered by <a href="https://catchiq.fishing">CatchIQ</a></div>
     </div>
 
     <div class="tabs">
-      <div class="tab active" id="tab-lb" onclick="showTab('lb')">Leaderboard</div>
-      <div class="tab" id="tab-roster" onclick="showTab('roster')">Roster</div>
+      <div class="tab active" id="tab-lb"     onclick="showTab('lb')">Leaderboard</div>
+      <div class="tab"        id="tab-teams"  onclick="showTab('teams')" style="display:none">Teams</div>
+      <div class="tab"        id="tab-roster" onclick="showTab('roster')">Roster</div>
     </div>
 
-    <div id="panel-lb" class="leaderboard"></div>
+    <div id="panel-lb"     class="leaderboard"></div>
+    <div id="panel-teams"  class="leaderboard" style="display:none"></div>
 
-    <div id="panel-roster" class="roster">
+    <div id="panel-roster" class="roster" style="display:none">
       <input class="roster-filter" type="text" placeholder="Search angler or team…" oninput="filterRoster(this.value)">
       <div id="roster-count" class="roster-count"></div>
       <table class="roster-table" id="roster-table">
@@ -281,7 +313,6 @@
           <tr>
             <th>Angler</th>
             <th>Team</th>
-            <th>Location</th>
           </tr>
         </thead>
         <tbody id="roster-body"></tbody>
@@ -300,10 +331,12 @@
 
 <script>
   const API = 'https://api.catchiq.fishing';
-  const REFRESH_MS = 30000; // auto-refresh leaderboard every 30s
+  const REFRESH_MS = 30000; // auto-refresh every 30 s — suitable for big-screen display
 
   const slug = new URLSearchParams(window.location.search).get('id');
   let allRoster = [];
+  let scoringMethod = 'largest_single';
+  let hasTeams = false;
 
   if (!slug) {
     showError();
@@ -320,7 +353,7 @@
   }
 
   function render(data) {
-    const { page, roster, leaderboard } = data;
+    const { page, tournament, roster, leaderboard, teamLeaderboard } = data;
 
     // Accent color
     if (page.accentColor) {
@@ -339,7 +372,37 @@
     document.getElementById('last-updated').textContent =
       'Updated ' + new Date().toLocaleTimeString();
 
-    // Leaderboard
+    // No tournament linked yet
+    if (!tournament) {
+      document.getElementById('panel-lb').innerHTML =
+        '<div class="empty-lb">Tournament not yet linked. Check back soon!</div>';
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      return;
+    }
+
+    scoringMethod = tournament.scoringMethod;
+    hasTeams = tournament.teamSize > 1 && Array.isArray(teamLeaderboard) && teamLeaderboard.length > 0;
+
+    // Show/hide Teams tab
+    const tabTeams = document.getElementById('tab-teams');
+    if (hasTeams) {
+      tabTeams.style.display = '';
+    } else {
+      tabTeams.style.display = 'none';
+    }
+
+    // Scoring method label
+    const methodLabels = {
+      largest_single: 'Largest Fish',
+      total_length:   'Total Length',
+      total_weight:   'Total Weight',
+      catch_count:    'Most Catches',
+    };
+    document.getElementById('scoring-method').textContent =
+      methodLabels[scoringMethod] || scoringMethod;
+
+    // ── Individual leaderboard ──────────────────────────────────────────────
     const lbPanel = document.getElementById('panel-lb');
     if (!leaderboard.length) {
       lbPanel.innerHTML = '<div class="empty-lb">No catches recorded yet. Check back soon!</div>';
@@ -348,24 +411,47 @@
         const rank = i + 1;
         const rankClass = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : 'rn';
         const rankLabel = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+        const score = scoreDisplay(a, scoringMethod);
         return `
           <div class="lb-row">
             <div class="lb-rank ${rankClass}">${rankLabel}</div>
             <div class="lb-info">
               <div class="lb-name">${esc(a.anglerName)}</div>
               ${a.teamName ? `<div class="lb-team">${esc(a.teamName)}</div>` : ''}
+              ${a.verifiedCount > 0 ? `<div class="tc-badge"><div class="tc-badge-icon"></div>${a.verifiedCount} Verified</div>` : ''}
             </div>
             <div class="lb-stats">
-              <div class="lb-catches">${a.catchCount}</div>
-              <div class="lb-catches-label">catches</div>
-              ${a.biggestLengthIn ? `<div class="lb-best">${parseFloat(a.biggestLengthIn).toFixed(1)}"</div>` : ''}
-              ${a.biggestWeightLb ? `<div class="lb-best">${parseFloat(a.biggestWeightLb).toFixed(1)} lb</div>` : ''}
+              <div class="lb-catches">${score.value}</div>
+              <div class="lb-catches-label">${score.label}</div>
+              ${score.sub ? `<div class="lb-best">${score.sub}</div>` : ''}
             </div>
           </div>`;
       }).join('');
     }
 
-    // Roster
+    // ── Team leaderboard ────────────────────────────────────────────────────
+    if (hasTeams) {
+      const teamPanel = document.getElementById('panel-teams');
+      teamPanel.innerHTML = teamLeaderboard.map((t, i) => {
+        const rank = i + 1;
+        const rankClass = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : 'rn';
+        const rankLabel = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+        const scoreStr = formatTeamScore(t.score, scoringMethod);
+        return `
+          <div class="lb-row">
+            <div class="lb-rank ${rankClass}">${rankLabel}</div>
+            <div class="lb-info">
+              <div class="lb-name">${esc(t.teamName)}</div>
+              <div class="lb-team">${t.memberCount} member${t.memberCount !== 1 ? 's' : ''}</div>
+            </div>
+            <div class="lb-stats">
+              <div class="lb-catches">${scoreStr}</div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Roster ──────────────────────────────────────────────────────────────
     allRoster = roster;
     renderRoster(roster);
 
@@ -373,13 +459,43 @@
     document.getElementById('app').style.display = 'block';
   }
 
+  function scoreDisplay(a, method) {
+    switch (method) {
+      case 'total_length':
+        return { value: a.totalLengthIn != null ? a.totalLengthIn.toFixed(1) + '"' : '—', label: 'total length', sub: null };
+      case 'total_weight':
+        return { value: a.totalWeightLb != null ? a.totalWeightLb.toFixed(2) + ' lb' : '—', label: 'total weight', sub: null };
+      case 'catch_count':
+        return {
+          value: String(a.catchCount),
+          label: 'catches',
+          sub: a.biggestLengthIn != null ? 'Best: ' + a.biggestLengthIn.toFixed(1) + '"' : null,
+        };
+      default: // largest_single
+        return {
+          value: a.biggestLengthIn != null ? a.biggestLengthIn.toFixed(1) + '"' : '—',
+          label: 'largest',
+          sub: a.biggestWeightLb != null ? a.biggestWeightLb.toFixed(2) + ' lb' : null,
+        };
+    }
+  }
+
+  function formatTeamScore(score, method) {
+    if (score === 0) return '—';
+    switch (method) {
+      case 'total_length': return score.toFixed(1) + '"';
+      case 'total_weight': return score.toFixed(2) + ' lb';
+      default:             return String(score);
+    }
+  }
+
   function renderRoster(rows) {
-    document.getElementById('roster-count').textContent = `${rows.length} registered angler${rows.length !== 1 ? 's' : ''}`;
+    document.getElementById('roster-count').textContent =
+      `${rows.length} registered angler${rows.length !== 1 ? 's' : ''}`;
     document.getElementById('roster-body').innerHTML = rows.map(a => `
       <tr>
         <td>${esc(a.angler_name)}</td>
         <td>${esc(a.team_name || '—')}</td>
-        <td>${[a.city, a.state].filter(Boolean).map(esc).join(', ') || '—'}</td>
       </tr>`).join('');
   }
 
@@ -388,16 +504,18 @@
     const filtered = lower
       ? allRoster.filter(a =>
           (a.angler_name || '').toLowerCase().includes(lower) ||
-          (a.team_name  || '').toLowerCase().includes(lower))
+          (a.team_name   || '').toLowerCase().includes(lower))
       : allRoster;
     renderRoster(filtered);
   }
 
   function showTab(id) {
-    document.getElementById('panel-lb').style.display     = id === 'lb'     ? 'block' : 'none';
-    document.getElementById('panel-roster').style.display = id === 'roster' ? 'block' : 'none';
-    document.getElementById('tab-lb').classList.toggle('active',     id === 'lb');
-    document.getElementById('tab-roster').classList.toggle('active', id === 'roster');
+    ['lb', 'teams', 'roster'].forEach(t => {
+      const panel = document.getElementById('panel-' + t);
+      const tab   = document.getElementById('tab-' + t);
+      if (panel) panel.style.display = t === id ? 'block' : 'none';
+      if (tab)   tab.classList.toggle('active', t === id);
+    });
   }
 
   function showError() {
@@ -407,7 +525,9 @@
 
   function esc(s) {
     if (!s) return '';
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 </script>
 </body>

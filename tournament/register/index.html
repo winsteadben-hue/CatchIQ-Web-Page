@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Registration — CatchIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --gold:    #ffc907;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+      --red:     #e74c3c;
+      --accent:  #00c9a7;
+    }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--deep);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 28px 24px 24px;
+      text-align: center;
+    }
+    .header-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+    }
+    .header-tagline { color: var(--mist); font-size: 0.9rem; margin-top: 6px; }
+    .powered-by { margin-top: 10px; font-size: 0.72rem; color: var(--fog); }
+    .powered-by a { color: var(--teal); text-decoration: none; }
+
+    /* ── Info bar ── */
+    .info-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .info-cell {
+      flex: 1;
+      min-width: 130px;
+      padding: 16px 18px;
+      background: var(--deep);
+      text-align: center;
+    }
+    .info-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+    }
+    .info-label {
+      font-size: 0.68rem;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 3px;
+    }
+
+    /* ── Main content ── */
+    .main { max-width: 560px; margin: 0 auto; padding: 36px 20px 60px; }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .section-sub { color: var(--fog); font-size: 0.88rem; margin-bottom: 28px; }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    input::placeholder { color: var(--fog); }
+    select option { background: var(--deep); }
+
+    .required { color: var(--red); }
+
+    /* ── Entry fee box ── */
+    .fee-box {
+      background: linear-gradient(135deg, rgba(255,201,7,0.08), rgba(255,201,7,0.03));
+      border: 1px solid rgba(255,201,7,0.25);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .fee-amount {
+      font-family: 'DM Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .fee-label { color: var(--fog); font-size: 0.8rem; margin-top: 4px; }
+
+    /* ── Stripe element placeholder ── */
+    #stripe-card-element {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 13px 14px;
+      min-height: 44px;
+    }
+    #stripe-card-element.StripeElement--focus { border-color: var(--accent); }
+    #stripe-card-errors { color: var(--red); font-size: 0.82rem; margin-top: 6px; min-height: 18px; }
+
+    .stripe-notice {
+      font-size: 0.72rem;
+      color: var(--fog);
+      text-align: center;
+      margin-top: 8px;
+    }
+    .stripe-notice a { color: var(--teal); text-decoration: none; }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%;
+      background: var(--accent);
+      color: var(--navy);
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 15px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: 0.88; }
+    .submit-btn:disabled { opacity: 0.45; cursor: default; }
+
+    /* ── Success state ── */
+    .success-card {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .success-icon { font-size: 4rem; margin-bottom: 16px; }
+    .success-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--teal); margin-bottom: 12px; }
+    .success-body { color: var(--mist); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px; }
+    .scoreboard-link {
+      display: inline-block;
+      background: rgba(0,201,167,0.12);
+      border: 1px solid rgba(0,201,167,0.3);
+      border-radius: 8px;
+      color: var(--teal);
+      padding: 10px 24px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ── Full / closed ── */
+    .closed-card {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .closed-icon { font-size: 3rem; margin-bottom: 16px; }
+    .closed-title { font-size: 1.3rem; color: var(--mist); margin-bottom: 8px; }
+    .closed-sub { color: var(--fog); font-size: 0.88rem; }
+
+    /* ── Loading / error ── */
+    .state-msg { text-align: center; padding: 80px 20px; color: var(--fog); }
+    .state-msg h2 { color: var(--mist); margin-bottom: 8px; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.72rem;
+      color: var(--fog);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    footer a { color: var(--teal); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div id="loading" class="state-msg">
+    <h2>Loading…</h2>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="header">
+      <div id="header-name" class="header-name"></div>
+      <div id="header-tagline" class="header-tagline"></div>
+      <div class="powered-by">Tournament registration powered by <a href="https://catchiq.fishing">CatchIQ</a></div>
+    </div>
+
+    <div class="info-bar">
+      <div class="info-cell">
+        <div id="info-name" class="info-value">—</div>
+        <div class="info-label">Tournament</div>
+      </div>
+      <div class="info-cell">
+        <div id="info-dates" class="info-value">—</div>
+        <div class="info-label">Dates</div>
+      </div>
+      <div class="info-cell">
+        <div id="info-scoring" class="info-value">—</div>
+        <div class="info-label">Scoring</div>
+      </div>
+      <div class="info-cell">
+        <div id="info-spots" class="info-value">—</div>
+        <div class="info-label">Spots Left</div>
+      </div>
+    </div>
+
+    <div class="main" id="main-content">
+      <!-- Injected by JS: form, success, or closed state -->
+    </div>
+  </div>
+
+  <div id="error" class="state-msg" style="display:none">
+    <h2>Registration not available</h2>
+    <p>This tournament's registration page is not active or registration has closed.</p>
+  </div>
+
+  <footer>
+    <a href="https://catchiq.fishing">CatchIQ</a> — Fish Smarter. Navigate Better.
+  </footer>
+
+<script>
+  const API = 'https://api.catchiq.fishing';
+
+  const slug = new URLSearchParams(window.location.search).get('id');
+  let tournamentData = null;
+
+  if (!slug) {
+    showError();
+  } else {
+    fetch(`${API}/api/v1/public/tournament/${encodeURIComponent(slug)}/register-info`)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(render)
+      .catch(() => showError());
+  }
+
+  function render(data) {
+    const { page, tournament } = data;
+    tournamentData = tournament;
+
+    // Apply accent
+    if (page.accentColor) {
+      document.documentElement.style.setProperty('--accent', page.accentColor);
+    }
+
+    // Header
+    document.title = `Register — ${tournament.name} — CatchIQ`;
+    document.getElementById('header-name').textContent = page.displayName;
+    if (page.tagline) document.getElementById('header-tagline').textContent = page.tagline;
+
+    // Info bar
+    document.getElementById('info-name').textContent = tournament.name;
+    document.getElementById('info-dates').textContent = formatDateRange(tournament.startDate, tournament.endDate);
+    document.getElementById('info-scoring').textContent = scoringLabel(tournament.scoringMethod);
+    document.getElementById('info-spots').textContent =
+      tournament.maxAnglers ? `${tournament.maxAnglers - tournament.registrantCount}` : '∞';
+
+    // Main content
+    const main = document.getElementById('main-content');
+    if (tournament.isFull) {
+      main.innerHTML = `
+        <div class="closed-card">
+          <div class="closed-icon">🎣</div>
+          <div class="closed-title">Tournament is Full</div>
+          <div class="closed-sub">All spots have been filled. Check back for future tournaments.</div>
+        </div>`;
+    } else {
+      renderForm(main, tournament);
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  function renderForm(container, tournament) {
+    const hasFee = tournament.entryFee > 0;
+    const isTeam = tournament.teamSize > 1;
+
+    container.innerHTML = `
+      <h2>Register for ${esc(tournament.name)}</h2>
+      <p class="section-sub">
+        ${tournament.location ? esc(tournament.location) + ' · ' : ''}
+        ${tournament.targetSpecies ? esc(tournament.targetSpecies) : 'Open species'}
+      </p>
+
+      ${hasFee ? `
+        <div class="fee-box">
+          <div class="fee-amount">$${parseFloat(tournament.entryFee).toFixed(2)}</div>
+          <div class="fee-label">Entry Fee per Angler</div>
+        </div>` : ''}
+
+      <form id="reg-form" novalidate>
+        <div class="form-group">
+          <label>Full Name <span class="required">*</span></label>
+          <input id="f-name" type="text" placeholder="Your full name" autocomplete="name" required>
+        </div>
+        <div class="form-group">
+          <label>Email ${hasFee ? '<span class="required">*</span>' : '(optional)'}</label>
+          <input id="f-email" type="email" placeholder="you@example.com" autocomplete="email" ${hasFee ? 'required' : ''}>
+        </div>
+        <div class="form-group">
+          <label>Phone (optional)</label>
+          <input id="f-phone" type="tel" placeholder="(555) 555-5555" autocomplete="tel">
+        </div>
+        ${isTeam ? `
+          <div class="form-group">
+            <label>Team Name <span class="required">*</span></label>
+            <input id="f-team" type="text" placeholder="Your team name" required>
+          </div>` : ''}
+
+        ${hasFee ? `
+          <div class="form-group" id="stripe-section">
+            <label>Card Details <span class="required">*</span></label>
+            <div id="stripe-card-element"></div>
+            <div id="stripe-card-errors" role="alert"></div>
+            <div class="stripe-notice">Payments secured by <a href="https://stripe.com" target="_blank" rel="noopener">Stripe</a></div>
+          </div>` : ''}
+
+        <div id="form-error" style="color:var(--red);font-size:0.85rem;margin-bottom:12px;display:none;"></div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">
+          ${hasFee ? `Register & Pay $${parseFloat(tournament.entryFee).toFixed(2)}` : 'Register Now'}
+        </button>
+      </form>`;
+
+    // Init Stripe if there's a fee
+    if (hasFee) {
+      initStripe();
+    }
+
+    document.getElementById('reg-form').addEventListener('submit', handleSubmit);
+  }
+
+  // ── Stripe integration ──────────────────────────────────────────────────────
+
+  let stripe = null;
+  let cardElement = null;
+
+  function initStripe() {
+    const STRIPE_PK = window.STRIPE_PUBLISHABLE_KEY || '';
+    if (!STRIPE_PK) {
+      // Stripe not configured — show notice
+      const el = document.getElementById('stripe-section');
+      if (el) el.innerHTML = `<div style="color:var(--gold);font-size:0.85rem;padding:12px;background:rgba(255,201,7,0.08);border-radius:8px;">Payment processing coming soon. Registration will open when payment is configured.</div>`;
+      document.getElementById('submit-btn').disabled = true;
+      return;
+    }
+    if (typeof Stripe === 'undefined') {
+      loadScript('https://js.stripe.com/v3/', () => {
+        stripe = Stripe(STRIPE_PK);
+        mountCard();
+      });
+    } else {
+      stripe = Stripe(STRIPE_PK);
+      mountCard();
+    }
+  }
+
+  function mountCard() {
+    const elements = stripe.elements({ locale: 'en' });
+    cardElement = elements.create('card', {
+      style: {
+        base: {
+          color: '#eef4f8',
+          fontFamily: '"DM Sans", sans-serif',
+          fontSize: '15px',
+          '::placeholder': { color: '#546e80' },
+        },
+        invalid: { color: '#e74c3c' },
+      },
+    });
+    cardElement.mount('#stripe-card-element');
+    cardElement.on('change', (e) => {
+      document.getElementById('stripe-card-errors').textContent = e.error ? e.error.message : '';
+    });
+  }
+
+  // ── Form submit ─────────────────────────────────────────────────────────────
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const errDiv = document.getElementById('form-error');
+    errDiv.style.display = 'none';
+
+    const name  = document.getElementById('f-name')?.value.trim();
+    const email = document.getElementById('f-email')?.value.trim();
+    const phone = document.getElementById('f-phone')?.value.trim();
+    const team  = document.getElementById('f-team')?.value.trim();
+
+    if (!name) { showFormError('Name is required.'); return; }
+    if (tournamentData.entryFee > 0 && !email) { showFormError('Email is required for paid registration.'); return; }
+    if (tournamentData.teamSize > 1 && !team) { showFormError('Team name is required.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Registering…';
+
+    try {
+      let paymentIntentId = null;
+
+      if (tournamentData.entryFee > 0 && stripe && cardElement) {
+        // Create PaymentIntent on server, confirm on client
+        const piRes = await fetch(`${API}/api/v1/public/tournament/${encodeURIComponent(slug)}/create-payment-intent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        if (!piRes.ok) throw new Error('Payment setup failed');
+        const { clientSecret } = await piRes.json();
+
+        const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: { card: cardElement, billing_details: { name, email } },
+        });
+        if (error) { showFormError(error.message); btn.disabled = false; btn.textContent = 'Try Again'; return; }
+        paymentIntentId = paymentIntent.id;
+        btn.textContent = 'Finalizing…';
+      }
+
+      const regRes = await fetch(`${API}/api/v1/public/tournament/${encodeURIComponent(slug)}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email: email || undefined, phone: phone || undefined, teamName: team || undefined, stripePaymentIntentId: paymentIntentId }),
+      });
+
+      if (!regRes.ok) {
+        const body = await regRes.json().catch(() => ({}));
+        throw new Error(body.error || 'Registration failed');
+      }
+
+      showSuccess(name);
+    } catch (err) {
+      showFormError(err.message || 'Something went wrong. Try again.');
+      btn.disabled = false;
+      btn.textContent = tournamentData.entryFee > 0 ? `Register & Pay $${parseFloat(tournamentData.entryFee).toFixed(2)}` : 'Register Now';
+    }
+  }
+
+  function showFormError(msg) {
+    const el = document.getElementById('form-error');
+    if (el) { el.textContent = msg; el.style.display = 'block'; }
+  }
+
+  function showSuccess(name) {
+    const scoreboardUrl = `https://catchiq.fishing/tournament?id=${encodeURIComponent(slug)}`;
+    document.getElementById('main-content').innerHTML = `
+      <div class="success-card">
+        <div class="success-icon">🎣</div>
+        <div class="success-title">You're Registered!</div>
+        <div class="success-body">
+          <strong style="color:var(--white)">${esc(name)}</strong>, you've been successfully registered
+          for <strong style="color:var(--white)">${esc(tournamentData.name)}</strong>.<br><br>
+          Download <a href="https://catchiq.fishing" style="color:var(--teal)">CatchIQ</a> and go to
+          <strong>Anglers → Claim Tournament Spot</strong> to link your account and log catches toward the scoreboard.
+        </div>
+        <a href="${scoreboardUrl}" class="scoreboard-link">View Live Scoreboard →</a>
+      </div>`;
+  }
+
+  // ── Utilities ───────────────────────────────────────────────────────────────
+
+  function showError() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function formatDateRange(start, end) {
+    const fmt = (iso) => {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+    if (!start && !end) return '—';
+    if (!end) return fmt(start);
+    return `${fmt(start)} – ${fmt(end)}`;
+  }
+
+  function scoringLabel(method) {
+    const map = {
+      largest_single: 'Largest Fish',
+      total_length: 'Total Length',
+      total_weight: 'Total Weight',
+      catch_count: 'Most Catches',
+    };
+    return map[method] || method || '—';
+  }
+
+  function loadScript(src, cb) {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+</script>
+
+<!--
+  To enable Stripe payments:
+  1. Create a Stripe account at https://stripe.com
+  2. Set your publishable key below (starts with pk_live_ or pk_test_):
+-->
+<script>
+  window.STRIPE_PUBLISHABLE_KEY = 'pk_test_51TL5cd2ccmQWiPGg2loshHP64F6hiPRBbOYsO7kL8mw3OOxmYc5f3dFuSNxPHffGeWcGwxeFFtcakAjebxKiYG5s008tsy2el';
+</script>
+
+</body>
+</html>
