@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help & User Guide — CatchIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --teal-dim:#007a65;
+      --amber:   #f5a623;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── WATER BACKGROUND ── */
+    .water-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .water-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 60% at 20% 80%, rgba(0,201,167,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 80% at 80% 20%, rgba(0,80,160,0.12) 0%, transparent 60%);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(6,14,26,0.95) 0%, rgba(6,14,26,0) 100%);
+      backdrop-filter: blur(2px);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 32px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--fog);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    @media (max-width: 600px) { .nav-links { display: none; } nav { padding: 0 20px; } }
+
+    /* ── PAGE ── */
+    .page { position: relative; z-index: 2; }
+
+    .hero {
+      padding: 120px 24px 48px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      color: var(--mist);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      position: sticky;
+      top: 72px;
+      z-index: 50;
+      background: rgba(6,14,26,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 14px 24px;
+    }
+    .search-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--fog);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    #search {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 11px 14px 11px 40px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #search::placeholder { color: var(--fog); }
+    #search:focus { border-color: var(--teal); }
+    .search-count {
+      font-size: 0.75rem;
+      color: var(--fog);
+      margin-top: 8px;
+      text-align: right;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 48px; }
+    .section-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0,201,167,0.2);
+    }
+
+    /* ── FEATURE CARD ── */
+    .feature {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .feature:hover { border-color: rgba(0,201,167,0.3); }
+    .feature.hidden { display: none; }
+
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .feature-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .feature-name {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--white);
+    }
+    .feature-path {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--teal);
+      background: rgba(0,201,167,0.1);
+      border: 1px solid rgba(0,201,167,0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .feature-chevron {
+      color: var(--fog);
+      font-size: 0.75rem;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .feature.open .feature-chevron { transform: rotate(180deg); }
+
+    .feature-body {
+      display: none;
+      padding: 0 18px 18px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .feature.open .feature-body { display: block; }
+
+    .feature-desc {
+      color: var(--mist);
+      font-size: 0.88rem;
+      line-height: 1.75;
+      margin-top: 14px;
+    }
+    .feature-desc p { margin-bottom: 10px; }
+    .feature-desc p:last-child { margin-bottom: 0; }
+
+    .tier-badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 20px;
+      padding: 3px 10px;
+      margin-top: 12px;
+    }
+    .tier-free   { background: rgba(84,110,128,0.2); color: var(--fog); border: 1px solid var(--fog); }
+    .tier-angler { background: rgba(0,201,167,0.12); color: var(--teal); border: 1px solid var(--teal); }
+    .tier-pro    { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid var(--amber); }
+
+    .steps {
+      margin-top: 12px;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: steps;
+    }
+    .steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      color: var(--mist);
+      line-height: 1.6;
+    }
+    .steps li::before {
+      content: counter(steps);
+      background: rgba(0,201,167,0.15);
+      color: var(--teal);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .tip {
+      background: rgba(0,201,167,0.06);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 0.83rem;
+      color: var(--mist);
+      line-height: 1.6;
+    }
+    .tip strong { color: var(--teal); }
+
+    /* ── SCREENSHOTS ── */
+    .screenshot-wrap {
+      margin-top: 14px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .screenshot {
+      max-width: 200px;
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--fog);
+    }
+    .no-results.visible { display: block; }
+    .no-results p { font-size: 0.95rem; margin-top: 8px; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--fog);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--teal); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<div class="water-bg"></div>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <img src="catchiq_logo.svg" alt="CatchIQ">
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/help.html" style="color:var(--teal)">Help</a>
+    <a href="/privacy.html">Privacy</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">User Guide</div>
+    <h1>How to use CatchIQ</h1>
+    <p>Find any feature, see exactly how to reach it in the app, and learn how it works.</p>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-inner">
+      <span class="search-icon">🔍</span>
+      <input type="search" id="search" placeholder="Search features — try &quot;tournament&quot;, &quot;species&quot;, &quot;forecast&quot;…" autocomplete="off">
+      <div class="search-count" id="searchCount"></div>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+
+    <!-- ── GETTING STARTED ── -->
+    <div class="section" data-section="Getting Started">
+      <div class="section-title">Getting Started</div>
+
+      <div class="feature" data-keywords="account sign up login email password create">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">👤</span>
+          <span class="feature-name">Creating an Account</span>
+          <span class="feature-path">Launch app → Sign Up</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Open CatchIQ and tap <strong>Sign Up</strong>. Enter your email address and create a password. You can also sign in with Google.</p>
+            <p>Once signed in, your catches, spots, and settings sync automatically across devices.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="navigation tabs bottom bar home log map predictions settings">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📱</span>
+          <span class="feature-name">App Navigation Overview</span>
+          <span class="feature-path">Bottom tab bar</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>CatchIQ has five main areas accessed from the tab bar at the bottom of the screen:</p>
+            <ol class="steps">
+              <li><strong>Log</strong> — your full catch history, grouped by date, species, or spot</li>
+              <li><strong>Map</strong> — all your catches and saved spots on an interactive chart</li>
+              <li><strong>Camera (center button)</strong> — tap to log a new catch</li>
+              <li><strong>Predictions</strong> — 10-day fishing forecast and spot scoring</li>
+              <li><strong>Settings</strong> — account, anglers, gear, tournaments, and preferences</li>
+            </ol>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CATCH LOGGING ── -->
+    <div class="section" data-section="Catch Logging">
+      <div class="section-title">Catch Logging</div>
+
+      <div class="feature" data-keywords="log catch photo camera take picture record fish new">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📷</span>
+          <span class="feature-name">Logging a Catch</span>
+          <span class="feature-path">Camera button (center tab)</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Tap the <strong>camera button</strong> in the centre of the bottom tab bar to open the catch camera.</p>
+            <ol class="steps">
+              <li>Take a photo of your catch (or upload from your camera roll)</li>
+              <li>CatchIQ identifies the species automatically and pre-fills length and weight</li>
+              <li>Review and adjust species, length, weight, and notes</li>
+              <li>Add gear, tag fishing partners, and confirm your location</li>
+              <li>Tap <strong>Save</strong></li>
+            </ol>
+            <p>Tide, solunar, and weather conditions are captured automatically at your GPS location the moment you save.</p>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Works offline — catches queue locally and sync when you're back online.</div>
+          <div class="screenshot-wrap">
+            <img class="screenshot" src="screenshots/catch-log-screen.png" alt="Catch Log screen">
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="AI species identification detect recognize fish name auto">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🤖</span>
+          <span class="feature-name">AI Species Identification</span>
+          <span class="feature-path">Camera button → take photo</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>When you take or upload a catch photo, CatchIQ analyses the image and identifies the species automatically. 47 species are supported.</p>
+            <p>A <strong>confidence score</strong> (High / Review Suggested) is displayed so you know how certain the AI is. You can always correct the species manually.</p>
+            <p>Length and weight are pre-filled using published fisheries size tables for the detected species.</p>
+          </div>
+          <span class="tier-badge tier-angler">Angler &amp; above</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="conditions tide solunar weather wind moon automatic capture">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🌊</span>
+          <span class="feature-name">Automatic Conditions Capture</span>
+          <span class="feature-path">Captured automatically on every save</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Every catch is permanently stamped with real-time conditions — no manual entry required:</p>
+            <ol class="steps">
+              <li><strong>Tide</strong> — phase (incoming/outgoing/slack), height, and nearest NOAA station</li>
+              <li><strong>Solunar</strong> — moon phase, major and minor activity periods, daily rating</li>
+              <li><strong>Weather</strong> — temperature, wind speed and direction, sky conditions</li>
+            </ol>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="edit catch update change modify delete remove">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">✏️</span>
+          <span class="feature-name">Editing or Deleting a Catch</span>
+          <span class="feature-path">Log tab → tap catch → Edit</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Tap any catch in the <strong>Log</strong> tab to open its detail view. Tap <strong>Edit</strong> to change any field — species, measurements, notes, gear, or location.</p>
+            <p>To delete a catch, open the detail view and scroll to the bottom.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── MAP & SPOTS ── -->
+    <div class="section" data-section="Map & Spots">
+      <div class="section-title">Map &amp; Spots</div>
+
+      <div class="feature" data-keywords="map nautical chart catches pins view location GPS">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🗺️</span>
+          <span class="feature-name">Viewing the Map</span>
+          <span class="feature-path">Map tab</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>The <strong>Map</strong> tab shows all your catches as clustered pins on an interactive nautical or standard chart. Tap any cluster to zoom in, or tap an individual pin to view that catch.</p>
+            <p>Switch between <strong>Nautical</strong> and <strong>Light</strong> map styles using the button in the top corner.</p>
+          </div>
+          <div class="screenshot-wrap">
+            <img class="screenshot" src="screenshots/map-screen.png" alt="Map screen">
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="spot save mark name location favourite place pin add">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📍</span>
+          <span class="feature-name">Saving a Spot</span>
+          <span class="feature-path">Map tab → long press on map → Save Spot</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Long-press anywhere on the map to drop a pin, then tap <strong>Save Spot</strong> and give it a name. Your current GPS position is also available as a one-tap option.</p>
+            <p>Saved spots appear as named markers on the map and are used by the Predictions screen to rank your best fishing locations.</p>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Spots are private by default and cloud-synced across your devices.</div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="spot history catches at spot view past fish">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📊</span>
+          <span class="feature-name">Spot Catch History</span>
+          <span class="feature-path">Map tab → tap a spot pin</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Tap any named spot on the map to see all catches recorded at that location — species breakdown, best catches, and catch frequency over time.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="offline maps download no signal cell service regions">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">⬇️</span>
+          <span class="feature-name">Offline Maps</span>
+          <span class="feature-path">Settings → Offline Maps</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Download map regions to your device so the chart works without cell service on the water.</p>
+            <ol class="steps">
+              <li>Go to <strong>Settings → Offline Maps</strong></li>
+              <li>Tap a region to download it</li>
+              <li>The map loads from device storage when you have no signal</li>
+            </ol>
+          </div>
+          <span class="tier-badge tier-angler">Angler &amp; above</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── FISHING PREDICTIONS ── -->
+    <div class="section" data-section="Fishing Predictions">
+      <div class="section-title">Fishing Predictions</div>
+
+      <div class="feature" data-keywords="forecast predictions 10 day fishing best days score lunar tide conditions">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📅</span>
+          <span class="feature-name">10-Day Fishing Forecast</span>
+          <span class="feature-path">Predictions tab</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>The <strong>Predictions</strong> tab shows a 10-day forecast grid. Each day is scored based on three factors:</p>
+            <ol class="steps">
+              <li><strong>Lunar</strong> — moon phase and solunar activity windows</li>
+              <li><strong>Tides</strong> — incoming/outgoing tide strength and timing</li>
+              <li><strong>Conditions</strong> — wind, temperature, and sky conditions</li>
+            </ol>
+            <p>Days are colour-coded from poor to excellent. Tap any day to see the full hourly breakdown.</p>
+          </div>
+          <div class="screenshot-wrap">
+            <img class="screenshot" src="screenshots/forecast-overview.png" alt="10-day forecast overview">
+          </div>
+          <span class="tier-badge tier-angler">Angler &amp; above</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="hourly schedule day detail activity windows best time">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🕐</span>
+          <span class="feature-name">Hourly Day Schedule</span>
+          <span class="feature-path">Predictions tab → tap any day</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Tap any day in the forecast grid to see a 24-hour activity chart. Each hour is scored and labelled — <em>Prime Window</em>, <em>Good Activity</em>, <em>Moderate</em>, or <em>Slow</em> — so you can plan exactly when to be on the water.</p>
+          </div>
+          <div class="screenshot-wrap">
+            <img class="screenshot" src="screenshots/forecast-schedule-detail.png" alt="Hourly schedule tab">
+            <img class="screenshot" src="screenshots/forecast-weather-detail.png" alt="Hourly weather tab">
+          </div>
+          <span class="tier-badge tier-angler">Angler &amp; above</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="my spots tab score rank best spot prediction day">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🏆</span>
+          <span class="feature-name">My Spots — Best Spot for a Day</span>
+          <span class="feature-path">Predictions tab → tap a day → My Spots tab</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>After tapping a day in the forecast, switch to the <strong>My Spots</strong> tab. CatchIQ ranks all your saved spots by predicted catch score for that day, taking into account the forecast conditions and the catch history at each spot.</p>
+            <p>Each spot card shows its score, water body type, the two best activity windows, and how many catches have been recorded nearby by the community.</p>
+          </div>
+          <span class="tier-badge tier-angler">Angler &amp; above</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="species weights lunar tides conditions adjust customize factor">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">⚖️</span>
+          <span class="feature-name">Customising Species Weights</span>
+          <span class="feature-path">Predictions tab → select species → tap Weights card</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Each species can have its own weighting for Lunar, Tides, and Conditions factors. For example, flounder may be more tide-dependent than lunar-dependent.</p>
+            <ol class="steps">
+              <li>Open the <strong>Predictions</strong> tab and select a species from the picker</li>
+              <li>Tap the <strong>Weights</strong> card at the bottom of the screen</li>
+              <li>Use the +/− buttons to adjust each factor in 5% increments — they automatically balance to 100%</li>
+            </ol>
+            <p>Weights are saved per-species and applied immediately to your forecast scores.</p>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Tap <strong>Reset</strong> to return to the default weights for any species.</div>
+          <span class="tier-badge tier-pro">Pro Angler</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="forecast locations add pin named location radius predictions area">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🌐</span>
+          <span class="feature-name">Forecast Locations</span>
+          <span class="feature-path">Settings → Forecast Locations</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Forecast Locations are named pins that anchor your Predictions tab. Each location has a <strong>radius (miles)</strong> that controls which saved spots appear in the My Spots tab when that location is selected.</p>
+            <ol class="steps">
+              <li>Go to <strong>Settings → Forecast Locations</strong></li>
+              <li>Tap <strong>Add Location</strong> and place a pin on the map</li>
+              <li>Name the location and set a radius</li>
+              <li>Back in Predictions, select your location from the picker at the top</li>
+            </ol>
+            <p>To edit the radius of an existing location, tap the mileage number shown on the location row.</p>
+          </div>
+          <span class="tier-badge tier-angler">Angler &amp; above</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── STATS ── -->
+    <div class="section" data-section="Stats & Analytics">
+      <div class="section-title">Stats &amp; Analytics</div>
+
+      <div class="feature" data-keywords="stats analytics charts catch frequency species breakdown personal best history">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📈</span>
+          <span class="feature-name">Viewing Your Stats</span>
+          <span class="feature-path">Log tab → Stats</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Access your stats from the <strong>Log</strong> tab. Choose a time range — 30 days, 90 days, 1 year, 2 years, 5 years, or All Time — and the charts update automatically.</p>
+            <p>Available charts include catch frequency, species breakdown, tide correlation, solunar correlation, and weather correlation (wind and temperature).</p>
+          </div>
+          <div class="screenshot-wrap">
+            <img class="screenshot" src="screenshots/stats-screen.png" alt="Stats screen">
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="personal best biggest heaviest longest most catches record">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🥇</span>
+          <span class="feature-name">Personal Bests</span>
+          <span class="feature-path">Log tab → Stats → scroll to Personal Bests</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Personal bests are tracked automatically across your entire catch history: heaviest catch, longest catch, and most catches in a single day — broken down by species.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="what's working gear lure bait top performing tackle">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🎣</span>
+          <span class="feature-name">What's Working — Top Gear</span>
+          <span class="feature-path">Log tab → Stats → What's Working</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>The <strong>What's Working</strong> section ranks your gear by catch count over the last 30 days. It shows your top lures, baits, and rigs so you know what's been most effective recently.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── ANGLERS ── -->
+    <div class="section" data-section="Anglers">
+      <div class="section-title">Anglers</div>
+
+      <div class="feature" data-keywords="anglers fishing partners add roster invite friend group">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">👥</span>
+          <span class="feature-name">Adding Fishing Partners</span>
+          <span class="feature-path">Settings → Anglers → Add</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Build a roster of the people you fish with. Go to <strong>Settings → Anglers</strong> and tap <strong>Add</strong>. Enter their name and optionally upload a photo.</p>
+            <p>You are always available as <strong>Me</strong> on every catch — no need to add yourself.</p>
+          </div>
+          <div class="tip"><strong>Free tier:</strong> up to 4 anglers (including yourself). Angler tier: 10. Pro Angler: 50.</div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="tag angler catch who was fishing partner assign">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🏷️</span>
+          <span class="feature-name">Tagging Anglers on a Catch</span>
+          <span class="feature-path">Camera button → catch form → Anglers</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>While logging a catch, scroll to the <strong>Anglers</strong> section of the catch form and tap the names of everyone who was fishing. Multiple anglers can be tagged on the same catch.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="invite angler email share app link send">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">✉️</span>
+          <span class="feature-name">Inviting a Partner via Email</span>
+          <span class="feature-path">Settings → Anglers → tap angler → Send Invite</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Tap an angler in your roster and select <strong>Send Invite</strong>. CatchIQ opens a pre-filled email with a link to download the app.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── GEAR ── -->
+    <div class="section" data-section="Gear & Tackle Box">
+      <div class="section-title">Gear &amp; Tackle Box</div>
+
+      <div class="feature" data-keywords="gear tackle box lure bait rig add browse search">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🎒</span>
+          <span class="feature-name">Building Your Tackle Box</span>
+          <span class="feature-path">Settings → Gear</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Go to <strong>Settings → Gear</strong> to browse the gear database. Search by name, filter by type (lure, bait, rig), and tap <strong>Add to Tackle Box</strong> to save items.</p>
+            <p>Your tackle box is available in the catch form so you can quickly record which gear landed each fish.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="gear catch select lure what used which bait record">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🪝</span>
+          <span class="feature-name">Selecting Gear on a Catch</span>
+          <span class="feature-path">Camera button → catch form → Gear</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>While logging a catch, scroll to the <strong>Gear</strong> section and select the lure or bait you were using. Items saved to your tackle box appear at the top for quick selection.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── TOURNAMENTS ── -->
+    <div class="section" data-section="Tournaments">
+      <div class="section-title">Tournaments</div>
+
+      <div class="feature" data-keywords="tournament register join entry fee enroll sign up pay stripe">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🏆</span>
+          <span class="feature-name">Registering for a Tournament</span>
+          <span class="feature-path">catchiq.fishing → Tournaments</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Tournament registration is handled through the CatchIQ web app at <a href="https://tournaments.catchiq.fishing" style="color:var(--teal)">tournaments.catchiq.fishing</a>.</p>
+            <ol class="steps">
+              <li>Open the tournament join link shared by the organiser</li>
+              <li>Enter your name and email, then complete payment if an entry fee applies</li>
+              <li>You will receive a confirmation email with an 8-character invite code</li>
+              <li>In the CatchIQ app, go to <strong>Settings → Tournaments</strong> and enter the code to link your account</li>
+            </ol>
+          </div>
+          <span class="tier-badge tier-free">All tiers</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="my tournaments list enrolled active upcoming status view">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📋</span>
+          <span class="feature-name">Viewing My Tournaments</span>
+          <span class="feature-path">Settings → Tournaments</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Go to <strong>Settings → Tournaments</strong> to see all tournaments you are registered for, along with their status — Registration Open, Active, Scoring, or Completed.</p>
+          </div>
+          <span class="tier-badge tier-free">All tiers</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="tournament catch submit fishing today daily opt in prompt enter">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🎯</span>
+          <span class="feature-name">Submitting Catches to a Tournament</span>
+          <span class="feature-path">Camera button → daily prompt</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>When an active tournament is in progress, CatchIQ asks once per day whether you are fishing in it. Tap <strong>Yes, I'm fishing today</strong> to opt in.</p>
+            <p>While opted in, the camera button turns gold and all catches you log automatically count toward the tournament scoreboard. You can toggle off individual catches using the banner at the top of the catch form.</p>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Your daily decision resets at midnight. You will be prompted again the following morning.</div>
+          <span class="tier-badge tier-free">All tiers</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div class="section" data-section="Settings">
+      <div class="section-title">Settings</div>
+
+      <div class="feature" data-keywords="units imperial metric pounds kilograms feet inches toggle switch">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📏</span>
+          <span class="feature-name">Changing Units (Imperial / Metric)</span>
+          <span class="feature-path">Settings → Units</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Go to <strong>Settings</strong> and toggle between <strong>Imperial</strong> (lb, in) and <strong>Metric</strong> (kg, cm). The change applies immediately across the whole app including your existing catch history.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="notifications push streak upload reminder alert">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🔔</span>
+          <span class="feature-name">Notifications</span>
+          <span class="feature-path">Settings → Notifications</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Toggle individual notification types on or off under <strong>Settings → Notifications</strong>:</p>
+            <ol class="steps">
+              <li><strong>Streak reminders</strong> — prompts to keep your logging streak alive</li>
+              <li><strong>Upload failures</strong> — alerts if a catch fails to sync</li>
+            </ol>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="log out sign out account logout">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🚪</span>
+          <span class="feature-name">Logging Out</span>
+          <span class="feature-path">Settings → scroll to bottom → Log Out</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Scroll to the bottom of the <strong>Settings</strong> screen and tap <strong>Log Out</strong>. A confirmation prompt will appear before you are signed out.</p>
+            <p>All your catches and spots remain safely stored in the cloud and will be available when you sign back in.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="delete account remove data privacy request email">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🗑️</span>
+          <span class="feature-name">Deleting Your Account</span>
+          <span class="feature-path">Settings → scroll to bottom → Delete Account</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Go to <strong>Settings</strong>, scroll to the bottom, and tap <strong>Delete Account</strong>. This opens a pre-filled email to our support team at <a href="mailto:support@catchiq.fishing" style="color:var(--teal)">support@catchiq.fishing</a> to process your deletion request.</p>
+            <p>All personal data including catches, spots, and account information will be permanently removed.</p>
+          </div>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NO RESULTS -->
+    <div class="no-results" id="noResults">
+      <div style="font-size:2.5rem">🎣</div>
+      <p>No features matched your search.</p>
+      <p style="margin-top:6px;font-size:0.82rem">Try a different keyword or <a href="mailto:support@catchiq.fishing" style="color:var(--teal)">contact support</a>.</p>
+    </div>
+
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+<footer>
+  <p>Need more help? Email <a href="mailto:support@catchiq.fishing">support@catchiq.fishing</a></p>
+  <p style="margin-top:8px"><a href="/">catchiq.fishing</a> &nbsp;·&nbsp; <a href="/privacy.html">Privacy Policy</a></p>
+</footer>
+
+<script>
+  function toggle(header) {
+    const card = header.closest('.feature');
+    card.classList.toggle('open');
+  }
+
+  const searchInput = document.getElementById('search');
+  const countEl     = document.getElementById('searchCount');
+  const noResults   = document.getElementById('noResults');
+
+  searchInput.addEventListener('input', function () {
+    const q = this.value.trim().toLowerCase();
+    const features = document.querySelectorAll('.feature');
+    const sections = document.querySelectorAll('.section');
+    let visible = 0;
+
+    features.forEach(function (card) {
+      const name     = card.querySelector('.feature-name').textContent.toLowerCase();
+      const desc     = card.querySelector('.feature-body').textContent.toLowerCase();
+      const keywords = (card.dataset.keywords || '').toLowerCase();
+      const match    = !q || name.includes(q) || desc.includes(q) || keywords.includes(q);
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+      if (match && q) card.classList.add('open');
+    });
+
+    sections.forEach(function (section) {
+      const anyVisible = Array.from(section.querySelectorAll('.feature')).some(function (c) {
+        return !c.classList.contains('hidden');
+      });
+      section.style.display = anyVisible ? '' : 'none';
+    });
+
+    countEl.textContent = q ? visible + ' result' + (visible !== 1 ? 's' : '') : '';
+    noResults.classList.toggle('visible', visible === 0 && !!q);
+  });
+</script>
+</body>
+</html>
