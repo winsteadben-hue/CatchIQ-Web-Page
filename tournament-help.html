@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Help — CatchIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --teal-dim:#007a65;
+      --amber:   #f5a623;
+      --purple:  #8b5cf6;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── WATER BACKGROUND ── */
+    .water-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .water-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 60% at 20% 80%, rgba(0,201,167,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 80% at 80% 20%, rgba(0,80,160,0.12) 0%, transparent 60%);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(6,14,26,0.95) 0%, rgba(6,14,26,0) 100%);
+      backdrop-filter: blur(2px);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 32px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--fog);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    @media (max-width: 600px) { .nav-links { display: none; } nav { padding: 0 20px; } }
+
+    /* ── PAGE ── */
+    .page { position: relative; z-index: 2; }
+
+    .hero {
+      padding: 120px 24px 48px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      color: var(--mist);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ── AUDIENCE SWITCHER ── */
+    .audience-switch {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .audience-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .audience-btn:hover { opacity: 0.8; }
+    .audience-btn-organizer {
+      background: rgba(139,92,246,0.15);
+      color: var(--purple);
+      border-color: rgba(139,92,246,0.35);
+    }
+    .audience-btn-angler {
+      background: rgba(0,201,167,0.1);
+      color: var(--teal);
+      border-color: rgba(0,201,167,0.3);
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      position: sticky;
+      top: 72px;
+      z-index: 50;
+      background: rgba(6,14,26,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 14px 24px;
+    }
+    .search-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--fog);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    #search {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 11px 14px 11px 40px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #search::placeholder { color: var(--fog); }
+    #search:focus { border-color: var(--teal); }
+    .search-count {
+      font-size: 0.75rem;
+      color: var(--fog);
+      margin-top: 8px;
+      text-align: right;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 48px; }
+    .section-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0,201,167,0.2);
+    }
+
+    /* ── FEATURE CARD ── */
+    .feature {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .feature:hover { border-color: rgba(0,201,167,0.3); }
+    .feature.hidden { display: none; }
+
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .feature-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .feature-name {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--white);
+    }
+    .feature-path {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--teal);
+      background: rgba(0,201,167,0.1);
+      border: 1px solid rgba(0,201,167,0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .feature-chevron {
+      color: var(--fog);
+      font-size: 0.75rem;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .feature.open .feature-chevron { transform: rotate(180deg); }
+
+    .feature-body {
+      display: none;
+      padding: 0 18px 18px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .feature.open .feature-body { display: block; }
+
+    .feature-desc {
+      color: var(--mist);
+      font-size: 0.88rem;
+      line-height: 1.75;
+      margin-top: 14px;
+    }
+    .feature-desc p { margin-bottom: 10px; }
+    .feature-desc p:last-child { margin-bottom: 0; }
+
+    /* ── ROLE BADGES ── */
+    .role-badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 20px;
+      padding: 3px 10px;
+      margin-top: 12px;
+    }
+    .role-organizer { background: rgba(139,92,246,0.12); color: var(--purple); border: 1px solid var(--purple); }
+    .role-angler    { background: rgba(0,201,167,0.12);  color: var(--teal);   border: 1px solid var(--teal); }
+    .role-both      { background: rgba(84,110,128,0.2);  color: var(--fog);    border: 1px solid var(--fog); }
+
+    /* ── STEPS ── */
+    .steps {
+      margin-top: 12px;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: steps;
+    }
+    .steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      color: var(--mist);
+      line-height: 1.6;
+    }
+    .steps li::before {
+      content: counter(steps);
+      background: rgba(0,201,167,0.15);
+      color: var(--teal);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ── TIP ── */
+    .tip {
+      background: rgba(0,201,167,0.06);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 0.83rem;
+      color: var(--mist);
+      line-height: 1.6;
+    }
+    .tip strong { color: var(--teal); }
+
+    /* ── STATUS FLOW ── */
+    .status-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .status-pill {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .status-arrow { color: var(--fog); font-size: 0.8rem; }
+    .s-draft        { background: rgba(100,116,139,0.2); color: #94a3b8; border: 1px solid #64748b44; }
+    .s-registration { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.35); }
+    .s-active       { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.35); }
+    .s-scoring      { background: rgba(139,92,246,0.15); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.35); }
+    .s-completed    { background: rgba(107,114,128,0.15); color: #9ca3af; border: 1px solid rgba(107,114,128,0.35); }
+
+    /* ── SCREENSHOTS ── */
+    .screenshot-wrap {
+      margin-top: 14px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .screenshot {
+      max-width: 100%;
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    /* ── SCREENSHOT PLACEHOLDER ── */
+    .screenshot-placeholder {
+      width: 100%;
+      min-height: 140px;
+      border-radius: 12px;
+      border: 1px dashed rgba(0,201,167,0.25);
+      background: rgba(0,201,167,0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+      padding: 20px;
+    }
+    .screenshot-placeholder-icon { font-size: 1.6rem; opacity: 0.4; }
+    .screenshot-placeholder-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fog);
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--fog);
+    }
+    .no-results.visible { display: block; }
+    .no-results p { font-size: 0.95rem; margin-top: 8px; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--fog);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--teal); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<div class="water-bg"></div>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <img src="catchiq_logo.svg" alt="CatchIQ">
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/help.html">App Help</a>
+    <a href="/tournament-help.html" style="color:var(--teal)">Tournament Help</a>
+    <a href="/privacy.html">Privacy</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Tournament Web App Guide</div>
+    <h1>CatchIQ Tournaments</h1>
+    <p>How to run a tournament as an organizer, or register and compete as an angler.</p>
+    <div class="audience-switch">
+      <a class="audience-btn audience-btn-organizer" href="#organizers">⚙️ I'm an Organizer</a>
+      <a class="audience-btn audience-btn-angler" href="#anglers">🎣 I'm an Angler</a>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-inner">
+      <span class="search-icon">🔍</span>
+      <input type="search" id="search" placeholder="Search — try &quot;roster&quot;, &quot;payment&quot;, &quot;scoring&quot;, &quot;join&quot;…" autocomplete="off">
+      <div class="search-count" id="searchCount"></div>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+
+    <!-- ══ ORGANIZER SECTIONS ══ -->
+    <div id="organizers"></div>
+
+    <!-- ── GETTING STARTED ── -->
+    <div class="section" data-section="Organizer — Getting Started">
+      <div class="section-title">Organizer — Getting Started</div>
+
+      <div class="feature" data-keywords="sign in login account organizer dashboard access web app">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🖥️</span>
+          <span class="feature-name">Signing In to the Tournament Dashboard</span>
+          <span class="feature-path">tournaments.catchiq.fishing</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Open <a href="https://tournaments.catchiq.fishing" style="color:var(--teal)">tournaments.catchiq.fishing</a> in any browser. Sign in with your CatchIQ account email and password — the same credentials you use in the mobile app.</p>
+            <p>After signing in you land on the <strong>Dashboard</strong>, which lists all tournaments you have created.</p>
+          </div>
+          <div class="screenshot-placeholder">
+            <span class="screenshot-placeholder-icon">📸</span>
+            <span class="screenshot-placeholder-label">Screenshot — Dashboard sign-in / overview</span>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="create new tournament setup name dates entry fee scoring mode">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">➕</span>
+          <span class="feature-name">Creating a Tournament</span>
+          <span class="feature-path">Dashboard → + New Tournament</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>From the Dashboard, click <strong>+ New Tournament</strong>. Fill in the setup form:</p>
+            <ol class="steps">
+              <li><strong>Name &amp; Location</strong> — tournament title and optional water body name</li>
+              <li><strong>Dates</strong> — start and end date/time, and optionally a daily fishing window (e.g. 6 AM – 8 PM)</li>
+              <li><strong>Target Species</strong> — optional; shown to anglers on the registration page</li>
+              <li><strong>Verification Mode</strong> — Virtual (photo only), Weigh-in, or Hybrid</li>
+              <li><strong>Scoring Method</strong> — Largest single fish, Total length, Total weight, or Most catches</li>
+              <li><strong>Team Size</strong> — set to 1 for individual; 2 or more enables team mode (requires a paid entry fee)</li>
+              <li><strong>Entry Fee</strong> — leave at $0 for a free tournament; enter a dollar amount to require payment</li>
+              <li><strong>Max Anglers</strong> — optional cap; registration closes automatically when reached</li>
+            </ol>
+            <p>Click <strong>Create</strong>. The tournament starts in <strong>Draft</strong> status — nothing is visible to anglers yet.</p>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Free tournaments are capped at 25 anglers and do not support team mode. Add an entry fee (even $1) to unlock both.</div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── TOURNAMENT STATUS ── -->
+    <div class="section" data-section="Organizer — Tournament Status">
+      <div class="section-title">Organizer — Tournament Status</div>
+
+      <div class="feature" data-keywords="status draft registration active scoring completed advance open close lifecycle">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🔄</span>
+          <span class="feature-name">Tournament Status Lifecycle</span>
+          <span class="feature-path">Tournament page → status button (top-right)</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Every tournament moves through five statuses. Use the button in the top-right corner of the tournament page to advance — or use <strong>↩ Back to…</strong> to revert if needed.</p>
+            <div class="status-flow">
+              <span class="status-pill s-draft">Draft</span>
+              <span class="status-arrow">→</span>
+              <span class="status-pill s-registration">Registration Open</span>
+              <span class="status-arrow">→</span>
+              <span class="status-pill s-active">Active</span>
+              <span class="status-arrow">→</span>
+              <span class="status-pill s-scoring">Scoring</span>
+              <span class="status-arrow">→</span>
+              <span class="status-pill s-completed">Completed</span>
+            </div>
+            <ol class="steps">
+              <li><strong>Draft</strong> — visible only to you. The registration link is inactive.</li>
+              <li><strong>Registration Open</strong> — the registration link goes live. Anglers can sign up and pay.</li>
+              <li><strong>Active</strong> — tournament is underway. Anglers can log tournament catches in the CatchIQ app.</li>
+              <li><strong>Scoring</strong> — fishing is over. Catches are locked; you review and approve submissions.</li>
+              <li><strong>Completed</strong> — final standings are set. Scoreboard remains visible.</li>
+            </ol>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="edit tournament change name dates settings details update">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">✏️</span>
+          <span class="feature-name">Editing Tournament Details</span>
+          <span class="feature-path">Tournament page → Edit button</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Click <strong>Edit</strong> on any tournament that is not yet Completed or Cancelled. You can change the name, dates, location, species, scoring method, entry fee, and other settings.</p>
+            <p>Changes take effect immediately. If you change the entry fee after anglers have already registered, existing paid entries are not affected — only new registrations use the updated fee.</p>
+          </div>
+          <div class="tip"><strong>Note:</strong> The Edit button is hidden once a tournament reaches Completed or Cancelled status. Revert the status first if a correction is needed.</div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="delete cancel tournament remove draft">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🗑️</span>
+          <span class="feature-name">Deleting a Tournament</span>
+          <span class="feature-path">Tournament page → Delete (Draft status only)</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>A tournament can only be permanently deleted while it is in <strong>Draft</strong> status. Once registration opens, delete is disabled to protect existing registrations.</p>
+            <p>To remove a live tournament, advance it to Completed or contact support.</p>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── REGISTRATION & ROSTER ── -->
+    <div class="section" data-section="Organizer — Registration & Roster">
+      <div class="section-title">Organizer — Registration &amp; Roster</div>
+
+      <div class="feature" data-keywords="registration link share anglers URL copy invite join">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🔗</span>
+          <span class="feature-name">Sharing the Registration Link</span>
+          <span class="feature-path">Tournament page → Registration Link card → Copy</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Once you advance to <strong>Registration Open</strong>, a registration link appears at the top of the tournament page. Click <strong>Copy</strong> and share it with your anglers via text, email, or social media.</p>
+            <p>The link opens the public registration page where anglers enter their details and pay the entry fee if applicable. Anyone with the link can register — no CatchIQ account required to sign up.</p>
+          </div>
+          <div class="screenshot-placeholder">
+            <span class="screenshot-placeholder-icon">📸</span>
+            <span class="screenshot-placeholder-label">Screenshot — Registration link card</span>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="add angler manually roster name email invite send">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">👤</span>
+          <span class="feature-name">Adding Anglers Manually</span>
+          <span class="feature-path">Tournament page → Anglers tab → Add Angler</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Open the <strong>Anglers</strong> tab. Use the <strong>Add Angler</strong> form at the top to add someone directly — useful for walk-up registrations or when managing a pre-set roster.</p>
+            <ol class="steps">
+              <li>Enter the angler's <strong>full name</strong> (required)</li>
+              <li>Enter their <strong>email address</strong> (optional — if provided, a join code is emailed automatically)</li>
+              <li>For team tournaments, select which <strong>team</strong> to assign them to</li>
+              <li>Click <strong>Add &amp; Send Invite</strong></li>
+            </ol>
+            <p>Anglers added without an email will appear on the roster but won't receive an email — you'll need to share their join code manually.</p>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="roster view list anglers registered invited status payment remove">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📋</span>
+          <span class="feature-name">Viewing & Managing the Roster</span>
+          <span class="feature-path">Tournament page → Anglers tab</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>The <strong>Anglers</strong> tab shows a table of everyone on the roster with their name, email, team (if applicable), and status.</p>
+            <p>Status indicators:</p>
+            <ol class="steps">
+              <li><strong>Registered</strong> (green) — angler has paid or been confirmed; their join code is active</li>
+              <li><strong>Invited</strong> (amber) — added to the roster but has not yet linked the code in the CatchIQ app</li>
+            </ol>
+            <p>To remove an angler, click <strong>Remove</strong> on their row. This also voids their join code. Payments are not automatically refunded — handle refunds through your Stripe Dashboard.</p>
+          </div>
+          <div class="screenshot-placeholder">
+            <span class="screenshot-placeholder-icon">📸</span>
+            <span class="screenshot-placeholder-label">Screenshot — Anglers tab roster list</span>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="email all participants broadcast announcement message send">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📣</span>
+          <span class="feature-name">Emailing All Participants</span>
+          <span class="feature-path">Tournament page → Anglers tab → Email All Participants</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Scroll to the bottom of the <strong>Anglers</strong> tab to find the <strong>Email All Participants</strong> form. Enter a subject and message and click <strong>Send</strong>.</p>
+            <p>Each angler receives an individual email — no one can see other participants' addresses. Anglers without an email address on file are skipped and counted separately.</p>
+          </div>
+          <div class="tip"><strong>Use this for:</strong> rules reminders, schedule changes, weigh-in details, or final results announcements.</div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── TEAMS ── -->
+    <div class="section" data-section="Organizer — Teams">
+      <div class="section-title">Organizer — Teams</div>
+
+      <div class="feature" data-keywords="teams create team name assign anglers team size group pair">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">👥</span>
+          <span class="feature-name">Creating and Managing Teams</span>
+          <span class="feature-path">Tournament page → Teams tab</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>The <strong>Teams</strong> tab is visible only for tournaments with a team size of 2 or more. Use it to create named teams before or during registration.</p>
+            <ol class="steps">
+              <li>Click <strong>Create Team</strong> and enter a team name</li>
+              <li>Assign anglers to teams either here or when adding anglers manually on the Anglers tab</li>
+              <li>Anglers who register via the public join link can also select a team name during registration</li>
+              <li>To remove a team, click <strong>Delete</strong> — anglers on that team become unassigned</li>
+            </ol>
+            <p>Each team row shows the team name and how many anglers are assigned out of the maximum team size.</p>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CATCHES ── -->
+    <div class="section" data-section="Organizer — Catch Review">
+      <div class="section-title">Organizer — Catch Review</div>
+
+      <div class="feature" data-keywords="catches review queue approve reject flag photo measurement truecatch pending">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🐟</span>
+          <span class="feature-name">Reviewing Submitted Catches</span>
+          <span class="feature-path">Tournament page → Catches tab</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Open the <strong>Catches</strong> tab to see all catches submitted by registered anglers. Each catch card shows:</p>
+            <ol class="steps">
+              <li>Angler name and team (if applicable)</li>
+              <li>Timestamp the catch was recorded</li>
+              <li>Species, length, and weight</li>
+              <li>Fish photo and measurement photo (click to enlarge)</li>
+              <li>Any automatic flags raised by TrueCatch verification</li>
+            </ol>
+            <p>For catches in <strong>Pending Review</strong> status, three action buttons appear:</p>
+            <ol class="steps">
+              <li><strong>Approve</strong> — marks the catch as verified; it counts toward the scoreboard</li>
+              <li><strong>Flag</strong> — returns the catch to pending; useful while gathering more information</li>
+              <li><strong>Reject</strong> — disqualifies the catch; it is excluded from standings</li>
+            </ol>
+            <p>Decisions update the scoreboard immediately.</p>
+          </div>
+          <div class="screenshot-placeholder">
+            <span class="screenshot-placeholder-icon">📸</span>
+            <span class="screenshot-placeholder-label">Screenshot — Catches tab review queue</span>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Catches are submitted automatically from the CatchIQ app while the tournament is Active. You do not need to collect photos separately.</div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── SCOREBOARD ── -->
+    <div class="section" data-section="Organizer — Scoreboard">
+      <div class="section-title">Organizer — Scoreboard</div>
+
+      <div class="feature" data-keywords="scoreboard standings rank leaderboard individual team refresh public">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🏆</span>
+          <span class="feature-name">Viewing the Scoreboard</span>
+          <span class="feature-path">Tournament page → Scoreboard tab</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>The <strong>Scoreboard</strong> tab shows live standings based on approved catches and the tournament's scoring method. For team tournaments, both team standings and individual standings are displayed.</p>
+            <p>The score displayed depends on the scoring method chosen when the tournament was created:</p>
+            <ol class="steps">
+              <li><strong>Largest single fish</strong> — longest single approved catch (inches)</li>
+              <li><strong>Total length</strong> — sum of all approved catch lengths</li>
+              <li><strong>Total weight</strong> — sum of all approved catch weights</li>
+              <li><strong>Most catches</strong> — total number of approved catches</li>
+            </ol>
+            <p>Pending catch counts appear in amber next to each angler's name. Click <strong>Refresh</strong> to reload standings after reviewing new catches.</p>
+          </div>
+          <div class="screenshot-placeholder">
+            <span class="screenshot-placeholder-icon">📸</span>
+            <span class="screenshot-placeholder-label">Screenshot — Scoreboard tab</span>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="public scoreboard link share spectators view anyone URL copy">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📡</span>
+          <span class="feature-name">Sharing the Public Scoreboard</span>
+          <span class="feature-path">Tournament page → Public Scoreboard card → Copy</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>If the tournament was set to <strong>Public Scoreboard</strong>, a shareable link appears next to the registration link at the top of the tournament page. Anyone with this link can view live standings — no login required.</p>
+            <p>To enable a public scoreboard, go to <strong>Edit</strong> and set <strong>Public Scoreboard</strong> to Yes.</p>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── PAYMENTS ── -->
+    <div class="section" data-section="Organizer — Payments">
+      <div class="section-title">Organizer — Payments</div>
+
+      <div class="feature" data-keywords="stripe connect payment setup entry fee bank account deposit collect money">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">💳</span>
+          <span class="feature-name">Connecting Stripe to Collect Entry Fees</span>
+          <span class="feature-path">Dashboard → Payment Processing card → Connect Stripe</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>To collect entry fees you must connect a Stripe account. This is a one-time setup per organizer account — not per tournament.</p>
+            <ol class="steps">
+              <li>On the <strong>Dashboard</strong>, find the <strong>Payment Processing</strong> card</li>
+              <li>Click <strong>Connect Stripe</strong> — you will be redirected to Stripe's secure onboarding flow</li>
+              <li>Create a new Stripe account (or link an existing one), enter your bank details, and complete identity verification</li>
+              <li>Once approved, you are redirected back to CatchIQ and the card shows <strong>Connected</strong> in green</li>
+            </ol>
+            <p>Entry fees collected from anglers are deposited directly to your bank account by Stripe, minus Stripe's standard processing fee plus CatchIQ's platform fee.</p>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Stripe approval usually takes a few minutes but can take up to 24 hours for identity verification. Set up Stripe before opening registration for a paid tournament.</div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="stripe dashboard payouts refunds balance transactions view payments">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📊</span>
+          <span class="feature-name">Viewing Payments & Issuing Refunds</span>
+          <span class="feature-path">Dashboard → Payment Processing → Stripe Dashboard →</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Once connected, click <strong>Stripe Dashboard →</strong> on the Payment Processing card to open your Stripe account in a new tab. From there you can:</p>
+            <ol class="steps">
+              <li>View individual payment records and angler names</li>
+              <li>Check your payout schedule and bank transfer history</li>
+              <li>Issue full or partial refunds to individual anglers</li>
+            </ol>
+            <p>CatchIQ does not process refunds — all refund actions are handled directly in your Stripe Dashboard.</p>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="payment link generate regenerate free no stripe">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🔁</span>
+          <span class="feature-name">Generating a Payment Link</span>
+          <span class="feature-path">Tournament page → Overview tab → Fees card → Generate Payment Link</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>For individual (non-team) paid tournaments, CatchIQ creates a Stripe Payment Link that is embedded in the registration flow. If you need to regenerate it — for example, after changing the entry fee — click <strong>Generate Payment Link</strong> (or <strong>↻ Regenerate</strong>) in the Overview tab's Fees card.</p>
+            <p>You must have Stripe connected before a payment link can be generated. If Stripe is not connected, a warning will direct you back to the Dashboard.</p>
+          </div>
+          <span class="role-badge role-organizer">Organizer</span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ══ ANGLER SECTIONS ══ -->
+    <div id="anglers"></div>
+
+    <!-- ── JOINING ── -->
+    <div class="section" data-section="Angler — Joining a Tournament">
+      <div class="section-title">Angler — Joining a Tournament</div>
+
+      <div class="feature" data-keywords="register join tournament link sign up angler entry pay free">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📝</span>
+          <span class="feature-name">Registering for a Tournament</span>
+          <span class="feature-path">Open the registration link shared by the organizer</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Your tournament organizer will share a registration link via text, email, or social media. Open it in any browser — no CatchIQ account is required to register.</p>
+            <p>The page shows the tournament details: dates, location, species, scoring method, and entry fee.</p>
+            <ol class="steps">
+              <li>Enter your <strong>full name</strong></li>
+              <li>Enter your <strong>email address</strong> — your join code and instructions will be sent here</li>
+              <li>Optionally enter your phone number</li>
+              <li>Click <strong>Register</strong> (free tournaments) or <strong>Register &amp; Pay</strong> (paid tournaments)</li>
+            </ol>
+          </div>
+          <div class="screenshot-placeholder">
+            <span class="screenshot-placeholder-icon">📸</span>
+            <span class="screenshot-placeholder-label">Screenshot — Public registration page</span>
+          </div>
+          <span class="role-badge role-angler">Angler</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="team register team name members captain add pair partner group">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">👥</span>
+          <span class="feature-name">Registering as a Team</span>
+          <span class="feature-path">Registration page → Team section</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>For team tournaments, additional fields appear after your personal details:</p>
+            <ol class="steps">
+              <li>Enter a <strong>team name</strong> (required)</li>
+              <li>Click <strong>+ Add team member</strong> for each additional angler on your team</li>
+              <li>Enter each team member's name and email</li>
+              <li>Click <strong>Register &amp; Pay</strong> — one payment covers the entire team</li>
+            </ol>
+            <p>After payment, every team member receives an individual email with their own personal join code. Each person links their own code to their own CatchIQ app account.</p>
+          </div>
+          <div class="tip"><strong>Note:</strong> The person completing registration is the team captain. Each team member still needs their own CatchIQ app account to log catches.</div>
+          <span class="role-badge role-angler">Angler</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="payment stripe checkout credit card entry fee pay confirm">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">💳</span>
+          <span class="feature-name">Paying the Entry Fee</span>
+          <span class="feature-path">Registration page → Register & Pay → Stripe checkout</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>For paid tournaments, clicking <strong>Register &amp; Pay</strong> redirects you to a Stripe-hosted checkout page. Enter your card details and complete payment.</p>
+            <p>After a successful payment you are returned to the registration page with a confirmation message. Your join code is emailed within a few minutes.</p>
+            <p>If you close or cancel the checkout without completing payment, you are returned to the registration form — no charge is made and you can try again.</p>
+          </div>
+          <span class="role-badge role-angler">Angler</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="join code activate link app settings tournaments claim connect after registration email">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">📲</span>
+          <span class="feature-name">Activating Your Join Code in the App</span>
+          <span class="feature-path">CatchIQ app → Settings → Tournaments → enter join code</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>After registering you will receive a confirmation email containing an <strong>8-character join code</strong> (e.g. <code style="color:var(--teal);font-family:'DM Mono',monospace">AB3D7K2M</code>). You must enter this code in the CatchIQ mobile app to link your account to the tournament.</p>
+            <ol class="steps">
+              <li>Open the <strong>CatchIQ app</strong> on your phone</li>
+              <li>Go to <strong>Settings → Tournaments</strong></li>
+              <li>Tap <strong>Enter Join Code</strong> and type your 8-character code</li>
+              <li>Tap <strong>Claim My Spot</strong> — the tournament will appear in your tournaments list</li>
+            </ol>
+            <p>Once linked, the tournament appears in <strong>Settings → My Tournaments</strong>. When the tournament goes Active, you will be prompted each day to opt in to tournament fishing before logging catches.</p>
+          </div>
+          <div class="tip"><strong>Don't have the app yet?</strong> Download CatchIQ from the App Store or Google Play. Create a free account and then enter your join code.</div>
+          <span class="role-badge role-angler">Angler</span>
+        </div>
+      </div>
+
+      <div class="feature" data-keywords="log catches tournament active fishing today opt in camera submit">
+        <div class="feature-header" onclick="toggle(this)">
+          <span class="feature-icon">🎯</span>
+          <span class="feature-name">Logging Tournament Catches</span>
+          <span class="feature-path">CatchIQ app → Camera button (when tournament is Active)</span>
+          <span class="feature-chevron">▼</span>
+        </div>
+        <div class="feature-body">
+          <div class="feature-desc">
+            <p>Once the tournament is Active and you have linked your join code, the CatchIQ app prompts you each morning: <strong>"Are you fishing in [Tournament Name] today?"</strong></p>
+            <ol class="steps">
+              <li>Tap <strong>Yes, I'm fishing today</strong> to opt in</li>
+              <li>The camera button turns gold — all catches you log automatically count toward the tournament</li>
+              <li>Each catch requires two photos: one of the fish and one of the measurement</li>
+              <li>Your catch is submitted to the organizer's review queue automatically</li>
+            </ol>
+            <p>You can toggle individual catches off the tournament using the banner at the top of the catch form.</p>
+          </div>
+          <div class="tip"><strong>Tip:</strong> Your daily opt-in resets at midnight. If you fish across multiple days, you will be prompted again each morning.</div>
+          <span class="role-badge role-angler">Angler</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NO RESULTS -->
+    <div class="no-results" id="noResults">
+      <div style="font-size:2.5rem">🎣</div>
+      <p>No results matched your search.</p>
+      <p style="margin-top:6px;font-size:0.82rem">Try a different keyword or <a href="mailto:support@catchiq.fishing" style="color:var(--teal)">contact support</a>.</p>
+    </div>
+
+  </div><!-- /content -->
+
+</div><!-- /page -->
+
+<footer>
+  <p>Looking for the mobile app guide? <a href="/help.html">CatchIQ App Help →</a></p>
+  <p style="margin-top:8px">Need more help? Email <a href="mailto:support@catchiq.fishing">support@catchiq.fishing</a></p>
+  <p style="margin-top:8px"><a href="/">catchiq.fishing</a> &nbsp;·&nbsp; <a href="/privacy.html">Privacy Policy</a></p>
+</footer>
+
+<script>
+  function toggle(header) {
+    const card = header.closest('.feature');
+    card.classList.toggle('open');
+  }
+
+  const searchInput = document.getElementById('search');
+  const countEl     = document.getElementById('searchCount');
+  const noResults   = document.getElementById('noResults');
+
+  searchInput.addEventListener('input', function () {
+    const q = this.value.trim().toLowerCase();
+    const features = document.querySelectorAll('.feature');
+    const sections = document.querySelectorAll('.section');
+    let visible = 0;
+
+    features.forEach(function (card) {
+      const name     = card.querySelector('.feature-name').textContent.toLowerCase();
+      const desc     = card.querySelector('.feature-body').textContent.toLowerCase();
+      const keywords = (card.dataset.keywords || '').toLowerCase();
+      const match    = !q || name.includes(q) || desc.includes(q) || keywords.includes(q);
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+      if (match && q) card.classList.add('open');
+    });
+
+    sections.forEach(function (section) {
+      const anyVisible = Array.from(section.querySelectorAll('.feature')).some(function (c) {
+        return !c.classList.contains('hidden');
+      });
+      section.style.display = anyVisible ? '' : 'none';
+    });
+
+    countEl.textContent = q ? visible + ' result' + (visible !== 1 ? 's' : '') : '';
+    noResults.classList.toggle('visible', visible === 0 && !!q);
+  });
+</script>
+</body>
+</html>
