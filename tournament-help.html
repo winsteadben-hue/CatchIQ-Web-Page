@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tournament Help — CatchIQ</title>
+  <title>Tournament Help — IQ.Fishing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -418,7 +418,7 @@
 
 <nav>
   <a class="nav-logo" href="/">
-    <img src="catchiq_logo.svg" alt="CatchIQ">
+    <img src="catchiq_logo.svg" alt="IQ.Fishing">
   </a>
   <div class="nav-links">
     <a href="/">Home</a>
@@ -432,7 +432,7 @@
 
   <div class="hero">
     <div class="hero-eyebrow">Tournament Web App Guide</div>
-    <h1>CatchIQ Tournaments</h1>
+    <h1>IQ.Fishing Tournaments</h1>
     <p>How to run a tournament as an organizer, or register and compete as an angler.</p>
     <div class="audience-switch">
       <a class="audience-btn audience-btn-organizer" href="#organizers">⚙️ I'm an Organizer</a>
@@ -461,12 +461,12 @@
         <div class="feature-header" onclick="toggle(this)">
           <span class="feature-icon">🖥️</span>
           <span class="feature-name">Signing In to the Tournament Dashboard</span>
-          <span class="feature-path">tournaments.catchiq.fishing</span>
+          <span class="feature-path">tournaments.iq.fishing</span>
           <span class="feature-chevron">▼</span>
         </div>
         <div class="feature-body">
           <div class="feature-desc">
-            <p>Open <a href="https://tournaments.catchiq.fishing" style="color:var(--teal)">tournaments.catchiq.fishing</a> in any browser. Sign in with your CatchIQ account email and password — the same credentials you use in the mobile app.</p>
+            <p>Open <a href="https://tournaments.iq.fishing" style="color:var(--teal)">tournaments.iq.fishing</a> in any browser. Sign in with your IQ.Fishing account email and password — the same credentials you use in the mobile app.</p>
             <p>After signing in you land on the <strong>Dashboard</strong>, which lists all tournaments you have created.</p>
           </div>
           <div class="screenshot-wrap">
@@ -533,7 +533,7 @@
             <ol class="steps">
               <li><strong>Draft</strong> — visible only to you. The registration link is inactive.</li>
               <li><strong>Registration Open</strong> — the registration link goes live. Anglers can sign up and pay.</li>
-              <li><strong>Active</strong> — tournament is underway. Anglers can log tournament catches in the CatchIQ app.</li>
+              <li><strong>Active</strong> — tournament is underway. Anglers can log tournament catches in the IQ.Fishing app.</li>
               <li><strong>Scoring</strong> — fishing is over. Catches are locked; you review and approve submissions.</li>
               <li><strong>Completed</strong> — final standings are set. Scoreboard remains visible.</li>
             </ol>
@@ -591,7 +591,7 @@
         <div class="feature-body">
           <div class="feature-desc">
             <p>Once you advance to <strong>Registration Open</strong>, a registration link appears at the top of the tournament page. Click <strong>Copy</strong> and share it with your anglers via text, email, or social media.</p>
-            <p>The link opens the public registration page where anglers enter their details and pay the entry fee if applicable. Anyone with the link can register — no CatchIQ account required to sign up.</p>
+            <p>The link opens the public registration page where anglers enter their details and pay the entry fee if applicable. Anyone with the link can register — no IQ.Fishing account required to sign up.</p>
           </div>
           <div class="screenshot-wrap">
             <img class="screenshot" src="screenshots/tournament-overview.png" alt="Tournament overview with registration link">
@@ -635,7 +635,7 @@
             <p>Status indicators:</p>
             <ol class="steps">
               <li><strong>Registered</strong> (green) — angler has paid or been confirmed; their join code is active</li>
-              <li><strong>Invited</strong> (amber) — added to the roster but has not yet linked the code in the CatchIQ app</li>
+              <li><strong>Invited</strong> (amber) — added to the roster but has not yet linked the code in the IQ.Fishing app</li>
             </ol>
             <p>To remove an angler, click <strong>Remove</strong> on their row. This also voids their join code. Payments are not automatically refunded — handle refunds through your Stripe Dashboard.</p>
           </div>
@@ -726,7 +726,7 @@
           <div class="screenshot-wrap">
             <img class="screenshot" src="screenshots/tournament-catches.png" alt="Catches review queue">
           </div>
-          <div class="tip"><strong>Tip:</strong> Catches are submitted automatically from the CatchIQ app while the tournament is Active. You do not need to collect photos separately.</div>
+          <div class="tip"><strong>Tip:</strong> Catches are submitted automatically from the IQ.Fishing app while the tournament is Active. You do not need to collect photos separately.</div>
           <span class="role-badge role-organizer">Organizer</span>
         </div>
       </div>
@@ -799,9 +799,9 @@
               <li>On the <strong>Dashboard</strong>, find the <strong>Payment Processing</strong> card</li>
               <li>Click <strong>Connect Stripe</strong> — you will be redirected to Stripe's secure onboarding flow</li>
               <li>Create a new Stripe account (or link an existing one), enter your bank details, and complete identity verification</li>
-              <li>Once approved, you are redirected back to CatchIQ and the card shows <strong>Connected</strong> in green</li>
+              <li>Once approved, you are redirected back to IQ.Fishing and the card shows <strong>Connected</strong> in green</li>
             </ol>
-            <p>Entry fees collected from anglers are deposited directly to your bank account by Stripe, minus Stripe's standard processing fee plus CatchIQ's platform fee.</p>
+            <p>Entry fees collected from anglers are deposited directly to your bank account by Stripe, minus Stripe's standard processing fee plus IQ.Fishing's platform fee.</p>
           </div>
           <div class="tip"><strong>Tip:</strong> Stripe approval usually takes a few minutes but can take up to 24 hours for identity verification. Set up Stripe before opening registration for a paid tournament.</div>
           <span class="role-badge role-organizer">Organizer</span>
@@ -823,7 +823,7 @@
               <li>Check your payout schedule and bank transfer history</li>
               <li>Issue full or partial refunds to individual anglers</li>
             </ol>
-            <p>CatchIQ does not process refunds — all refund actions are handled directly in your Stripe Dashboard.</p>
+            <p>IQ.Fishing does not process refunds — all refund actions are handled directly in your Stripe Dashboard.</p>
           </div>
           <span class="role-badge role-organizer">Organizer</span>
         </div>
@@ -838,7 +838,7 @@
         </div>
         <div class="feature-body">
           <div class="feature-desc">
-            <p>For individual (non-team) paid tournaments, CatchIQ creates a Stripe Payment Link that is embedded in the registration flow. If you need to regenerate it — for example, after changing the entry fee — click <strong>Generate Payment Link</strong> (or <strong>↻ Regenerate</strong>) in the Overview tab's Fees card.</p>
+            <p>For individual (non-team) paid tournaments, IQ.Fishing creates a Stripe Payment Link that is embedded in the registration flow. If you need to regenerate it — for example, after changing the entry fee — click <strong>Generate Payment Link</strong> (or <strong>↻ Regenerate</strong>) in the Overview tab's Fees card.</p>
             <p>You must have Stripe connected before a payment link can be generated. If Stripe is not connected, a warning will direct you back to the Dashboard.</p>
           </div>
           <span class="role-badge role-organizer">Organizer</span>
@@ -864,7 +864,7 @@
         </div>
         <div class="feature-body">
           <div class="feature-desc">
-            <p>Your tournament organizer will share a registration link via text, email, or social media. Open it in any browser — no CatchIQ account is required to register.</p>
+            <p>Your tournament organizer will share a registration link via text, email, or social media. Open it in any browser — no IQ.Fishing account is required to register.</p>
             <p>The page shows the tournament details: dates, location, species, scoring method, and entry fee.</p>
             <ol class="steps">
               <li>Enter your <strong>full name</strong></li>
@@ -897,9 +897,9 @@
               <li>Enter each team member's name and email</li>
               <li>Click <strong>Register &amp; Pay</strong> — one payment covers the entire team</li>
             </ol>
-            <p>After payment, every team member receives an individual email with their own personal join code. Each person links their own code to their own CatchIQ app account.</p>
+            <p>After payment, every team member receives an individual email with their own personal join code. Each person links their own code to their own IQ.Fishing app account.</p>
           </div>
-          <div class="tip"><strong>Note:</strong> The person completing registration is the team captain. Each team member still needs their own CatchIQ app account to log catches.</div>
+          <div class="tip"><strong>Note:</strong> The person completing registration is the team captain. Each team member still needs their own IQ.Fishing app account to log catches.</div>
           <span class="role-badge role-angler">Angler</span>
         </div>
       </div>
@@ -925,21 +925,21 @@
         <div class="feature-header" onclick="toggle(this)">
           <span class="feature-icon">📲</span>
           <span class="feature-name">Activating Your Join Code in the App</span>
-          <span class="feature-path">CatchIQ app → Settings → Tournaments → enter join code</span>
+          <span class="feature-path">IQ.Fishing app → Settings → Tournaments → enter join code</span>
           <span class="feature-chevron">▼</span>
         </div>
         <div class="feature-body">
           <div class="feature-desc">
-            <p>After registering you will receive a confirmation email containing an <strong>8-character join code</strong> (e.g. <code style="color:var(--teal);font-family:'DM Mono',monospace">AB3D7K2M</code>). You must enter this code in the CatchIQ mobile app to link your account to the tournament.</p>
+            <p>After registering you will receive a confirmation email containing an <strong>8-character join code</strong> (e.g. <code style="color:var(--teal);font-family:'DM Mono',monospace">AB3D7K2M</code>). You must enter this code in the IQ.Fishing mobile app to link your account to the tournament.</p>
             <ol class="steps">
-              <li>Open the <strong>CatchIQ app</strong> on your phone</li>
+              <li>Open the <strong>IQ.Fishing app</strong> on your phone</li>
               <li>Go to <strong>Settings → Tournaments</strong></li>
               <li>Tap <strong>Enter Join Code</strong> and type your 8-character code</li>
               <li>Tap <strong>Claim My Spot</strong> — the tournament will appear in your tournaments list</li>
             </ol>
             <p>Once linked, the tournament appears in <strong>Settings → My Tournaments</strong>. When the tournament goes Active, you will be prompted each day to opt in to tournament fishing before logging catches.</p>
           </div>
-          <div class="tip"><strong>Don't have the app yet?</strong> Download CatchIQ from the App Store or Google Play. Create a free account and then enter your join code.</div>
+          <div class="tip"><strong>Don't have the app yet?</strong> Download IQ.Fishing from the App Store or Google Play. Create a free account and then enter your join code.</div>
           <span class="role-badge role-angler">Angler</span>
         </div>
       </div>
@@ -948,12 +948,12 @@
         <div class="feature-header" onclick="toggle(this)">
           <span class="feature-icon">🎯</span>
           <span class="feature-name">Logging Tournament Catches</span>
-          <span class="feature-path">CatchIQ app → Camera button (when tournament is Active)</span>
+          <span class="feature-path">IQ.Fishing app → Camera button (when tournament is Active)</span>
           <span class="feature-chevron">▼</span>
         </div>
         <div class="feature-body">
           <div class="feature-desc">
-            <p>Once the tournament is Active and you have linked your join code, the CatchIQ app prompts you each morning: <strong>"Are you fishing in [Tournament Name] today?"</strong></p>
+            <p>Once the tournament is Active and you have linked your join code, the IQ.Fishing app prompts you each morning: <strong>"Are you fishing in [Tournament Name] today?"</strong></p>
             <ol class="steps">
               <li>Tap <strong>Yes, I'm fishing today</strong> to opt in</li>
               <li>The camera button turns gold — all catches you log automatically count toward the tournament</li>
@@ -973,7 +973,7 @@
     <div class="no-results" id="noResults">
       <div style="font-size:2.5rem">🎣</div>
       <p>No results matched your search.</p>
-      <p style="margin-top:6px;font-size:0.82rem">Try a different keyword or <a href="mailto:support@catchiq.fishing" style="color:var(--teal)">contact support</a>.</p>
+      <p style="margin-top:6px;font-size:0.82rem">Try a different keyword or <a href="mailto:support@iq.fishing" style="color:var(--teal)">contact support</a>.</p>
     </div>
 
   </div><!-- /content -->
@@ -981,8 +981,8 @@
 </div><!-- /page -->
 
 <footer>
-  <p>Looking for the mobile app guide? <a href="/help.html">CatchIQ App Help →</a></p>
-  <p style="margin-top:8px">Need more help? Email <a href="mailto:support@catchiq.fishing">support@catchiq.fishing</a></p>
+  <p>Looking for the mobile app guide? <a href="/help.html">IQ.Fishing App Help →</a></p>
+  <p style="margin-top:8px">Need more help? Email <a href="mailto:support@iq.fishing">support@iq.fishing</a></p>
   <p style="margin-top:8px"><a href="/">catchiq.fishing</a> &nbsp;·&nbsp; <a href="/privacy.html">Privacy Policy</a></p>
 </footer>
 

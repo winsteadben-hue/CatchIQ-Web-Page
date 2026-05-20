@@ -2,6 +2,15 @@
 
 Static marketing/landing site for catchiq.fishing. Plain HTML, CSS, and SVG — no build step, no framework.
 
+## Quick Rules
+
+/ state assumptions, never guess silently  
+/ minimum code, nothing speculative  
+/ surgical changes, don't refactor adjacent code  
+/ define success, loop until verified
+
+---
+
 ## Source Control
 
 This project is maintained in GitHub at `winsteadben-hue/CatchIQ-Web-Page`. After every change, commit and push to keep the repository current. Do not leave changes uncommitted.
