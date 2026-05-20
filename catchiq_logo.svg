@@ -90,24 +90,15 @@
   <!--   WORDMARK (right)    -->
   <!-- ===================== -->
 
-  <!-- "Catch" word -->
+  <!-- "IQ.Fishing" wordmark -->
   <text x="215" y="165"
     font-family="Georgia, 'Times New Roman', serif"
-    font-size="72"
+    font-size="68"
     font-weight="700"
-    letter-spacing="-1"
-    fill="#ffffff">Catch</text>
+    letter-spacing="-1"><tspan fill="url(#goldGrad)">IQ.</tspan><tspan fill="#ffffff">Fishing</tspan></text>
 
-  <!-- "IQ" word in teal/gold -->
-  <text x="410" y="165"
-    font-family="Georgia, 'Times New Roman', serif"
-    font-size="72"
-    font-weight="700"
-    fill="url(#goldGrad)">IQ</text>
-
-  <!-- Dot separator between Catch and IQ — refined touch -->
   <!-- Thin rule under wordmark -->
-  <line x1="215" y1="176" x2="490" y2="176" stroke="#00c9a7" stroke-width="1.5" opacity="0.5"/>
+  <line x1="215" y1="176" x2="520" y2="176" stroke="#00c9a7" stroke-width="1.5" opacity="0.5"/>
 
   <!-- domain name -->
   <text x="215" y="198"
@@ -115,7 +106,7 @@
     font-size="14"
     letter-spacing="3"
     fill="#00c9a7"
-    opacity="0.7">catchiq.fishing</text>
+    opacity="0.7">iq.fishing</text>
 
   <!-- ===================== -->
   <!--     TAGLINE           -->
