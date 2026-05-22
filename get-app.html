@@ -257,5 +257,12 @@
 </footer>
 
 <script src="/support-widget.js"></script>
+<script>
+  const t = new URLSearchParams(window.location.search).get('t');
+  if (t) {
+    document.querySelector('.btn-tournament').href =
+      'https://iq.fishing/tournament?id=' + encodeURIComponent(t);
+  }
+</script>
 </body>
 </html>
