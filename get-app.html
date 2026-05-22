@@ -262,6 +262,8 @@
   if (t) {
     document.querySelector('.btn-tournament').href =
       'https://iq.fishing/tournament/?id=' + encodeURIComponent(t);
+  } else {
+    document.querySelector('.tournament-block').style.display = 'none';
   }
 </script>
 </body>
