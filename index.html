@@ -266,20 +266,20 @@
       letter-spacing: 0.04em;
     }
 
-    /* coming soon badge */
-    .coming-soon-badge {
-      position: absolute;
-      top: 140px;
-      right: clamp(24px, 5vw, 80px);
-      width: 110px;
-      height: 110px;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards 1.2s, spin 30s linear infinite 2s;
+    .store-badges { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; }
+    .btn-store {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(15,32,64,0.9); color: var(--white);
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 12px;
+      padding: 11px 22px; text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s, background 0.2s;
+      backdrop-filter: blur(12px);
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .coming-soon-badge svg { width: 100%; height: 100%; }
+    .btn-store:hover { border-color: var(--teal); background: rgba(0,201,167,0.08); }
+    .btn-store-icon { font-size: 1.5rem; line-height: 1; }
+    .btn-store-text-sub { font-size: 0.62rem; opacity: 0.55; line-height: 1; letter-spacing: 0.02em; }
+    .btn-store-text-name { font-size: 1rem; font-weight: 500; line-height: 1.3; }
 
     /* ── DIVIDER ── */
     .divider {
@@ -967,25 +967,6 @@
       <div class="sonar-ring"></div>
     </div>
 
-    <!-- coming soon spinning badge -->
-    <div class="coming-soon-badge" aria-hidden="true">
-      <svg viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="55" cy="55" r="50" stroke="rgba(0,201,167,0.15)" stroke-width="1"/>
-        <path id="textCircle" d="M55,55 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0" fill="none"/>
-        <text font-family="DM Mono, monospace" font-size="9.5" fill="#00c9a7" letter-spacing="3.8">
-          <textPath href="#textCircle">COMING SOON · 2027 · CATCHIQ ·</textPath>
-        </text>
-        <!-- Mini fish icon from logo, centered -->
-        <ellipse cx="55" cy="55" rx="14" ry="7" fill="#00c9a7" opacity="0.95"/>
-        <polygon points="41,55 35,49 35,61" fill="#00c9a7" opacity="0.9"/>
-        <circle cx="64" cy="53" r="2" fill="#0a1628"/>
-        <circle cx="64" cy="53" r="1.1" fill="#ffffff" opacity="0.95"/>
-        <!-- gold signal arcs -->
-        <path d="M61,46 Q66,41 71,46" fill="none" stroke="#f5a623" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-        <path d="M59,43 Q66,37 73,43" fill="none" stroke="#f5a623" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-      </svg>
-    </div>
-
     <p class="hero-eyebrow">Introducing IQ.Fishing</p>
 
     <!-- Hero logo -->
@@ -1004,11 +985,17 @@
     </p>
 
     <div class="hero-cta-group">
-      <div class="email-form">
-        <input type="email" id="heroEmail" placeholder="your@email.com" autocomplete="email">
-        <button class="btn-notify" onclick="handleNotify()">Notify Me</button>
+      <div class="store-badges">
+        <a href="#" class="btn-store">
+          <span class="btn-store-icon">🍎</span>
+          <div><div class="btn-store-text-sub">Download on the</div><div class="btn-store-text-name">App Store</div></div>
+        </a>
+        <a href="#" class="btn-store">
+          <span class="btn-store-icon">▶</span>
+          <div><div class="btn-store-text-sub">Get it on</div><div class="btn-store-text-name">Google Play</div></div>
+        </a>
       </div>
-      <p class="hero-note" id="heroMsg">Be first to know when we launch.</p>
+      <p class="hero-note">Available now on iOS and Android.</p>
     </div>
   </section>
 
@@ -1243,7 +1230,7 @@
   <section class="launch-section">
     <div class="launch-pill">
       <span class="dot"></span>
-      EARLY ACCESS — NOW AVAILABLE
+      NOW AVAILABLE
     </div>
 
     <!-- Logo in launch section -->
@@ -1254,17 +1241,22 @@
     </div>
 
     <h2 class="launch-title reveal">
-      Early access<br><span>is open.</span>
+      Download the<br><span>app.</span>
     </h2>
     <p class="launch-sub reveal">
-      IQ.Fishing is live on iOS TestFlight and Android. Request early access below — and help shape the app with your feedback during beta.
+      IQ.Fishing is available now on the App Store and Google Play. Start logging smarter today.
     </p>
 
-    <div class="email-form reveal" style="display:inline-flex; margin: 0 auto 0;">
-      <input type="email" id="footerEmail" placeholder="your@email.com" autocomplete="email">
-      <button class="btn-notify" onclick="handleNotifyFooter()">Request Access</button>
+    <div class="store-badges reveal" style="margin-bottom:16px;">
+      <a href="#" class="btn-store">
+        <span class="btn-store-icon">🍎</span>
+        <div><div class="btn-store-text-sub">Download on the</div><div class="btn-store-text-name">App Store</div></div>
+      </a>
+      <a href="#" class="btn-store">
+        <span class="btn-store-icon">▶</span>
+        <div><div class="btn-store-text-sub">Get it on</div><div class="btn-store-text-name">Google Play</div></div>
+      </a>
     </div>
-    <p class="hero-note" id="footerMsg" style="margin-top:14px;">iOS &amp; Android. No spam. Unsubscribe anytime.</p>
   </section>
 
   <!-- FOOTER -->
@@ -1305,7 +1297,7 @@
         &nbsp;·&nbsp;
         <a href="/about.html">About</a>
         &nbsp;·&nbsp;
-        catchiq.fishing
+        iq.fishing
       </div>
     </div>
   </footer>
@@ -1337,75 +1329,6 @@
 
   document.querySelectorAll('.step').forEach(el => stepObserver.observe(el));
 
-  // ── COUNTDOWN ─────────────────────────────────────────────
-  // Target: September 1, 2026
-  const launchDate = new Date('2027-03-01T09:00:00');
-
-  function updateCountdown() {
-    const now  = new Date();
-    const diff = launchDate - now;
-    if (diff <= 0) {
-      document.getElementById('countdown').innerHTML =
-        '<div style="font-family:Playfair Display,serif;font-size:2rem;color:var(--teal)">🎉 We\'re Live!</div>';
-      return;
-    }
-    const days  = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000) / 60000);
-    const secs  = Math.floor((diff % 60000) / 1000);
-
-    document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
-    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
-    document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
-    document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-
-  // ── EMAIL HANDLERS ────────────────────────────────────────
-  function handleNotify() {
-    const input = document.getElementById('heroEmail');
-    const msg   = document.getElementById('heroMsg');
-    const val   = input.value.trim();
-    if (!val || !val.includes('@')) {
-      input.style.borderRight = '2px solid #e05050';
-      setTimeout(() => input.style.borderRight = '', 1200);
-      return;
-    }
-    // Open mailto so the signup lands in support@iq.fishing inbox
-    window.location.href = `mailto:support@iq.fishing?subject=IQ.Fishing%20Waitlist&body=Please%20add%20me%20to%20the%20IQ.Fishing%20waitlist%3A%20${encodeURIComponent(val)}`;
-    msg.textContent = "✓ You're on the list! We'll be in touch.";
-    msg.style.color = 'var(--teal)';
-    input.value = '';
-    input.disabled = true;
-    document.querySelector('.btn-notify').textContent = '✓ Joined';
-    document.querySelector('.btn-notify').style.background = 'var(--teal-dim)';
-  }
-
-  function handleNotifyFooter() {
-    const input = document.getElementById('footerEmail');
-    const msg   = document.getElementById('footerMsg');
-    const val   = input.value.trim();
-    if (!val || !val.includes('@')) {
-      input.style.color = '#e05050';
-      setTimeout(() => input.style.color = '', 1200);
-      return;
-    }
-    // Open mailto so the signup lands in support@iq.fishing inbox
-    window.location.href = `mailto:support@iq.fishing?subject=IQ.Fishing%20Waitlist&body=Please%20add%20me%20to%20the%20IQ.Fishing%20waitlist%3A%20${encodeURIComponent(val)}`;
-    msg.textContent = "✓ You're on the list! We'll be in touch.";
-    msg.style.color = 'var(--teal)';
-    input.value = '';
-    input.disabled = true;
-    document.querySelectorAll('.btn-notify')[1].textContent = '✓ Joined';
-    document.querySelectorAll('.btn-notify')[1].style.background = 'var(--teal-dim)';
-  }
-
-  // enter key on email inputs
-  document.getElementById('heroEmail')
-    .addEventListener('keydown', e => { if (e.key === 'Enter') handleNotify(); });
-  document.getElementById('footerEmail')
-    .addEventListener('keydown', e => { if (e.key === 'Enter') handleNotifyFooter(); });
 </script>
 <script src="/support-widget.js"></script>
 </body>

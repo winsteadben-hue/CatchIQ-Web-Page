@@ -223,7 +223,7 @@
     <div class="header">
       <div id="header-name" class="header-name"></div>
       <div id="header-tagline" class="header-tagline"></div>
-      <div class="powered-by">Tournament registration powered by <a href="https://catchiq.fishing">IQ.Fishing</a></div>
+      <div class="powered-by">Tournament registration powered by <a href="https://iq.fishing">IQ.Fishing</a></div>
     </div>
 
     <div class="info-bar">
@@ -256,7 +256,7 @@
   </div>
 
   <footer>
-    <a href="https://catchiq.fishing">IQ.Fishing</a> — Fish Smarter. Navigate Better.
+    <a href="https://iq.fishing">IQ.Fishing</a> — Fish Smarter. Navigate Better.
   </footer>
 
 <script>
@@ -481,7 +481,7 @@
   }
 
   function showSuccess(name) {
-    const scoreboardUrl = `https://catchiq.fishing/tournament?id=${encodeURIComponent(slug)}`;
+    const scoreboardUrl = `https://iq.fishing/tournament?id=${encodeURIComponent(slug)}`;
     document.getElementById('main-content').innerHTML = `
       <div class="success-card">
         <div class="success-icon">🎣</div>
@@ -489,7 +489,7 @@
         <div class="success-body">
           <strong style="color:var(--white)">${esc(name)}</strong>, you've been successfully registered
           for <strong style="color:var(--white)">${esc(tournamentData.name)}</strong>.<br><br>
-          Download <a href="https://catchiq.fishing" style="color:var(--teal)">IQ.Fishing</a> and go to
+          Download <a href="https://iq.fishing" style="color:var(--teal)">IQ.Fishing</a> and go to
           <strong>Anglers → Claim Tournament Spot</strong> to link your account and log catches toward the scoreboard.
         </div>
         <a href="${scoreboardUrl}" class="scoreboard-link">View Live Scoreboard →</a>
