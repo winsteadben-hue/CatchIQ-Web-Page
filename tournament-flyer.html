@@ -531,7 +531,7 @@
 
     // QR code — points to registration page, falls back to scoreboard
     const qrTarget = OVERRIDES.registrationUrl ||
-      `https://iq.fishing/tournament/?id=${encodeURIComponent(slug)}`;
+      `https://catchiq-tournament.vercel.app/join/${encodeURIComponent(slug)}`;
     const qrImg = document.getElementById('qr-canvas');
     qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' +
       encodeURIComponent(qrTarget) + '&margin=4';
