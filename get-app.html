@@ -265,6 +265,11 @@
   } else {
     document.querySelector('.tournament-block').style.display = 'none';
   }
+
+  // On iOS, skip the landing page and go straight to the App Store
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+    window.location.replace('https://apps.apple.com/app/id6761079452');
+  }
 </script>
 </body>
 </html>
