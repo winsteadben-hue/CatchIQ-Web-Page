@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tournament Flyer — IQ.Fishing</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    /* ── Variables ── */
+    :root {
+      --navy:   #0a1628;
+      --teal:   #00c9a7;
+      --accent: #1e4fa3;
+      --border: #c8d8e8;
+      --text:   #1a2a3a;
+      --muted:  #546e80;
+      --gold:   #b8860b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #e8edf2;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    /* ── Loading / error states ── */
+    #loading, #error {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    #error { color: #c0392b; }
+
+    /* ── Flyer ── */
+    .flyer {
+      width: 816px;       /* 8.5" at 96 dpi */
+      min-height: 1056px; /* 11" at 96 dpi */
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      position: relative;
+      display: none;
+    }
+
+    /* ── Sponsor bar ── */
+    .sponsor-bar {
+      background: var(--navy);
+      color: var(--teal);
+      text-align: center;
+      padding: 10px 24px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── Header ── */
+    .flyer-header {
+      padding: 20px 28px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .header-left { flex: 1; }
+    .tournament-name {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .tournament-subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .header-logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: none;
+      flex-shrink: 0;
+    }
+    .logo-placeholder {
+      width: 90px;
+      height: 90px;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--border);
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Hero image ── */
+    .hero-wrap {
+      margin: 16px 28px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #f0f4f8;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero-placeholder {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 16px;
+    }
+
+    /* ── Info grid ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin: 0 28px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .info-cell {
+      padding: 12px 14px;
+      border-right: 1px solid var(--border);
+    }
+    .info-cell:last-child { border-right: none; }
+    .info-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+    .info-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Body ── */
+    .flyer-body {
+      display: flex;
+      gap: 20px;
+      padding: 0 28px 20px;
+    }
+    .body-left { flex: 1; }
+    .body-right { width: 190px; flex-shrink: 0; }
+
+    /* Rules */
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 2px solid var(--navy);
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+    }
+    .rules-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .rules-list li {
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.5;
+      padding-left: 10px;
+      border-left: 2px solid var(--teal);
+    }
+    .rules-list li strong { color: var(--navy); }
+
+    /* Schedule */
+    .schedule-item {
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+    .schedule-item strong { color: var(--navy); }
+
+    /* QR side panel */
+    .qr-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .qr-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-align: center;
+    }
+    #qr-canvas {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px;
+    }
+    .qr-sub {
+      font-size: 0.62rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .iq-badge {
+      background: var(--navy);
+      color: white;
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+      width: 100%;
+    }
+    .iq-badge-title {
+      font-size: 0.7rem;
+      color: var(--teal);
+      margin-bottom: 3px;
+    }
+    .iq-badge-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.02em;
+    }
+    .iq-badge-sub {
+      font-size: 0.62rem;
+      color: #8aa8c0;
+      margin-top: 2px;
+    }
+
+    /* ── Footer bar ── */
+    .flyer-footer {
+      background: var(--navy);
+      color: white;
+      padding: 10px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .footer-contact { color: #8aa8c0; }
+    .footer-site { color: var(--teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Print ── */
+    @media print {
+      body { background: none; padding: 0; }
+      .flyer { box-shadow: none; border: none; display: block !important; }
+      #loading, #error, .no-print { display: none !important; }
+    }
+
+    /* ── Edit bar (screen only) ── */
+    .edit-bar {
+      width: 816px;
+      background: #1e3a5f;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      gap: 12px;
+    }
+    .edit-bar label { color: #8aa8c0; }
+    .edit-bar input {
+      background: #0a1e38;
+      border: 1px solid #2a4a6a;
+      border-radius: 4px;
+      color: white;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      width: 320px;
+    }
+    .edit-bar button {
+      background: var(--teal);
+      color: var(--navy);
+      border: none;
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    @media print { .edit-bar { display: none; } }
+  </style>
+</head>
+<body>
+
+<!-- ── Edit bar (screen only) ── -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+
+  <div class="edit-bar no-print">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <label>Scoreboard slug:</label>
+      <input id="slug-input" type="text" placeholder="e.g. okeechobee-classic-2026">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="loadFlyer()">Load Flyer</button>
+      <button onclick="window.print()" style="background:#fff;color:#1e3a5f;">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <div id="loading">Enter your scoreboard slug above and click Load Flyer.</div>
+  <div id="error" style="display:none"></div>
+
+  <!-- ── Flyer ── -->
+  <div class="flyer" id="flyer">
+
+    <div class="sponsor-bar" id="f-sponsor">TOURNAMENT SPONSOR</div>
+
+    <div class="flyer-header">
+      <div class="header-left">
+        <div class="tournament-name" id="f-name">Tournament Name</div>
+        <div class="tournament-subtitle" id="f-subtitle">Annual Premier Fishing Challenge</div>
+      </div>
+      <img id="f-logo" class="header-logo" alt="Tournament logo">
+      <div id="f-logo-placeholder" class="logo-placeholder">TOURNAMENT<br>LOGO</div>
+    </div>
+
+    <div class="hero-wrap">
+      <img id="f-hero" style="display:none" alt="Tournament hero image">
+      <div id="f-hero-placeholder" class="hero-placeholder">Hero / venue image will appear here once uploaded in the app</div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-cell">
+        <div class="info-label">Location</div>
+        <div class="info-value" id="f-location">TBD</div>
+        <div class="info-sub">Official Boundaries</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">Dates &amp; Window</div>
+        <div class="info-value" id="f-dates">TBD</div>
+        <div class="info-sub" id="f-fishing-days"></div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">Registration</div>
+        <div class="info-value" id="f-fee">Free</div>
+        <div class="info-sub">Per Angler</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">Scoring</div>
+        <div class="info-value" id="f-scoring">Largest Fish</div>
+        <div class="info-sub" id="f-species"></div>
+      </div>
+    </div>
+
+    <div class="flyer-body">
+      <div class="body-left">
+
+        <div class="section-title">Official Tournament Rules</div>
+        <ul class="rules-list" id="f-rules">
+          <li><strong>Catch Reporting:</strong> All catches, measurements, and timestamps must be logged live using the IQ.Fishing mobile app.</li>
+          <li><strong>Validation:</strong> Photographic evidence with GPS tagging is required for every tournament entry via the app.</li>
+          <li><strong>Compliance:</strong> Competitors must strictly adhere to all applicable state wildlife regulations and official tournament boundary maps.</li>
+          <li><strong>Tackle &amp; Gear:</strong> Standard IGFA class regulations apply unless explicitly amended in the captain's brief.</li>
+          <li><strong>Safety:</strong> All vessels must carry active VHF radios and meet full safety compliance guidelines.</li>
+        </ul>
+
+        <div class="section-title">Schedule of Events</div>
+        <div class="schedule-item" id="f-captains"><strong>Captain's Meeting:</strong> See tournament registration for date &amp; time.</div>
+        <div class="schedule-item" id="f-awards"><strong>Awards Ceremony:</strong> Following final weigh-in at the main sponsor pavilion.</div>
+
+      </div>
+      <div class="body-right">
+        <div class="qr-panel">
+          <div class="qr-label">Scan to Register</div>
+          <canvas id="qr-canvas"></canvas>
+          <div class="qr-sub">Point camera to access registration page</div>
+          <div class="iq-badge" style="margin-top:12px;">
+            <div class="iq-badge-title">Managed Digitally with</div>
+            <div class="iq-badge-name">IQ.Fishing</div>
+            <div class="iq-badge-sub">Live reporting, scoring &amp; analytics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flyer-footer">
+      <span class="footer-contact" id="f-contact">Contact information will appear here</span>
+      <span class="footer-site" id="f-site">iq.fishing</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = 'https://api.catchiq.fishing';
+
+  // ── Manual overrides — edit these before printing ──────────────────────────
+  const OVERRIDES = {
+    sponsor:        '',   // e.g. "Big Bass Marine - Platinum Sponsor"
+    subtitle:       'Annual Premier Fishing Challenge',
+    captainsMeeting:'',   // e.g. "June 13 @ 6:00 PM — Attendance mandatory"
+    awards:         '',   // e.g. "June 18 @ 5:00 PM — Main sponsor pavilion"
+    contact:        '',   // e.g. "John Smith · 555-867-5309 · john@example.com"
+    registrationUrl:'',   // QR code URL — leave blank to use scoreboard URL
+  };
+
+  // ── Auto-read slug from URL ?id= or wait for user input ────────────────────
+  const urlSlug = new URLSearchParams(window.location.search).get('id');
+  if (urlSlug) {
+    document.getElementById('slug-input').value = urlSlug;
+    loadFlyer();
+  }
+
+  function loadFlyer() {
+    const slug = document.getElementById('slug-input').value.trim();
+    if (!slug) return;
+
+    document.getElementById('loading').textContent = 'Loading tournament data…';
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('flyer').style.display = 'none';
+
+    fetch(`${API}/api/v1/public/tournament/${encodeURIComponent(slug)}`)
+      .then(r => r.ok ? r.json() : Promise.reject('Tournament not found — check the slug.'))
+      .then(render)
+      .catch(err => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').textContent = typeof err === 'string' ? err : 'Failed to load tournament data.';
+        document.getElementById('error').style.display = 'block';
+      });
+  }
+
+  function fmt(iso) {
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function render(data) {
+    const { page, tournament } = data;
+    const slug = document.getElementById('slug-input').value.trim();
+
+    // Sponsor
+    const sponsor = OVERRIDES.sponsor || page.displayName || '';
+    document.getElementById('f-sponsor').textContent = sponsor || 'TOURNAMENT SPONSOR';
+
+    // Name + subtitle
+    document.getElementById('f-name').textContent = tournament ? tournament.title : page.displayName;
+    document.getElementById('f-subtitle').textContent = OVERRIDES.subtitle;
+
+    // Logo
+    const logoUrl = tournament && tournament.logoImageUrl;
+    if (logoUrl) {
+      document.getElementById('f-logo').src = logoUrl;
+      document.getElementById('f-logo').style.display = 'block';
+      document.getElementById('f-logo-placeholder').style.display = 'none';
+    }
+
+    // Hero
+    const heroUrl = tournament && tournament.heroImageUrl;
+    if (heroUrl) {
+      document.getElementById('f-hero').src = heroUrl;
+      document.getElementById('f-hero').style.display = 'block';
+      document.getElementById('f-hero-placeholder').style.display = 'none';
+    }
+
+    // Info cells
+    if (tournament) {
+      document.getElementById('f-dates').textContent =
+        fmt(tournament.startTime) + ' – ' + fmt(tournament.endTime);
+
+      const feeEl = document.getElementById('f-fee');
+      feeEl.textContent = tournament.entryFeeCents > 0
+        ? '$' + (tournament.entryFeeCents / 100).toFixed(2)
+        : 'Free';
+
+      const methodLabels = {
+        largest_single: 'Largest Fish',
+        total_length:   'Total Length',
+        total_weight:   'Total Weight',
+        catch_count:    'Most Catches',
+      };
+      document.getElementById('f-scoring').textContent =
+        methodLabels[tournament.scoringMethod] || tournament.scoringMethod;
+
+      if (tournament.targetSpecies) {
+        document.getElementById('f-species').textContent = tournament.targetSpecies;
+      }
+      if (tournament.locationName) {
+        document.getElementById('f-location').textContent = tournament.locationName;
+      }
+    }
+
+    // Schedule overrides
+    if (OVERRIDES.captainsMeeting) {
+      document.getElementById('f-captains').innerHTML =
+        `<strong>Captain's Meeting:</strong> ${OVERRIDES.captainsMeeting}`;
+    }
+    if (OVERRIDES.awards) {
+      document.getElementById('f-awards').innerHTML =
+        `<strong>Awards Ceremony:</strong> ${OVERRIDES.awards}`;
+    }
+
+    // Contact / site
+    if (OVERRIDES.contact) {
+      document.getElementById('f-contact').textContent = OVERRIDES.contact;
+    }
+    document.getElementById('f-site').textContent = 'iq.fishing/tournament/?id=' + slug;
+
+    // QR code — points to registration page, falls back to scoreboard
+    const qrTarget = OVERRIDES.registrationUrl ||
+      `https://iq.fishing/tournament/?id=${encodeURIComponent(slug)}`;
+    QRCode.toCanvas(document.getElementById('qr-canvas'), qrTarget, {
+      width: 160,
+      margin: 1,
+      color: { dark: '#0a1628', light: '#ffffff' },
+    });
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('flyer').style.display = 'block';
+  }
+</script>
+</body>
+</html>
