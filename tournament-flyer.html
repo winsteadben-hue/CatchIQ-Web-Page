@@ -358,7 +358,7 @@
       <div class="info-cell">
         <div class="info-label">Location</div>
         <div class="info-value" id="f-location">TBD</div>
-        <div class="info-sub">Official Boundaries</div>
+        <div class="info-sub" id="f-location-sub">Official Boundaries</div>
       </div>
       <div class="info-cell">
         <div class="info-label">Dates &amp; Window</div>
@@ -366,7 +366,7 @@
         <div class="info-sub" id="f-fishing-days"></div>
       </div>
       <div class="info-cell">
-        <div class="info-label">Registration</div>
+        <div class="info-label">Entry Fee</div>
         <div class="info-value" id="f-fee">Free</div>
         <div class="info-sub">Per Angler</div>
       </div>
@@ -380,18 +380,25 @@
     <div class="flyer-body">
       <div class="body-left">
 
-        <div class="section-title">Official Tournament Rules</div>
-        <ul class="rules-list" id="f-rules">
-          <li><strong>Catch Reporting:</strong> All catches, measurements, and timestamps must be logged live using the IQ.Fishing mobile app.</li>
-          <li><strong>Validation:</strong> Photographic evidence with GPS tagging is required for every tournament entry via the app.</li>
-          <li><strong>Compliance:</strong> Competitors must strictly adhere to all applicable state wildlife regulations and official tournament boundary maps.</li>
-          <li><strong>Tackle &amp; Gear:</strong> Standard IGFA class regulations apply unless explicitly amended in the captain's brief.</li>
-          <li><strong>Safety:</strong> All vessels must carry active VHF radios and meet full safety compliance guidelines.</li>
-        </ul>
+        <div class="section-title">Schedule &amp; Details</div>
+        <div id="f-schedule-block">
+          <div class="schedule-item" id="f-reg-open" style="display:none"><strong>Registration Opens:</strong> <span></span></div>
+          <div class="schedule-item" id="f-reg-close" style="display:none"><strong>Registration Deadline:</strong> <span></span></div>
+          <div class="schedule-item" id="f-start"><strong>Tournament Starts:</strong> <span></span></div>
+          <div class="schedule-item" id="f-end"><strong>Tournament Ends:</strong> <span></span></div>
+          <div class="schedule-item" id="f-max-days" style="display:none"><strong>Max Fishing Days:</strong> <span></span></div>
+          <div class="schedule-item" id="f-catch-window" style="display:none"><strong>Catch Log Window:</strong> <span></span></div>
+          <div class="schedule-item" id="f-target-species" style="display:none"><strong>Eligible Species:</strong> <span></span></div>
+          <div class="schedule-item" id="f-boundary" style="display:none"><strong>Fishing Boundary:</strong> <span></span></div>
+          <div class="schedule-item" id="f-mode" style="display:none"><strong>Verification:</strong> <span></span></div>
+          <div class="schedule-item" id="f-captains" style="display:none"><strong>Captain's Meeting:</strong> <span></span></div>
+          <div class="schedule-item" id="f-awards" style="display:none"><strong>Awards Ceremony:</strong> <span></span></div>
+        </div>
 
-        <div class="section-title">Schedule of Events</div>
-        <div class="schedule-item" id="f-captains"><strong>Captain's Meeting:</strong> See tournament registration for date &amp; time.</div>
-        <div class="schedule-item" id="f-awards"><strong>Awards Ceremony:</strong> Following final weigh-in at the main sponsor pavilion.</div>
+        <div class="section-title" style="margin-top:14px;">Official Tournament Rules</div>
+        <div id="f-rules-block">
+          <!-- Populated from tournament.rules if set, otherwise default rules -->
+        </div>
 
       </div>
       <div class="body-right">
@@ -423,8 +430,8 @@
   const OVERRIDES = {
     sponsor:        '',   // e.g. "Big Bass Marine - Platinum Sponsor"
     subtitle:       'Annual Premier Fishing Challenge',
-    captainsMeeting:'',   // e.g. "June 13 @ 6:00 PM — Attendance mandatory"
-    awards:         '',   // e.g. "June 18 @ 5:00 PM — Main sponsor pavilion"
+    captainsMeeting:'See tournament registration for date & time.',
+    awards:         'Following final weigh-in at the main sponsor pavilion.',
     contact:        '',   // e.g. "John Smith · 555-867-5309 · john@example.com"
     registrationUrl:'',   // QR code URL — leave blank to use scoreboard URL
   };
@@ -458,6 +465,19 @@
   function fmt(iso) {
     return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
+  function fmtDT(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+    });
+  }
+  function show(id, text) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.querySelector('span').textContent = text;
+    el.style.display = 'block';
+  }
 
   function render(data) {
     const { page, tournament } = data;
@@ -487,42 +507,91 @@
       document.getElementById('f-hero-placeholder').style.display = 'none';
     }
 
+    const methodLabels = {
+      largest_single: 'Largest Fish',
+      total_length:   'Total Length',
+      total_weight:   'Total Weight',
+      catch_count:    'Most Catches',
+    };
+    const modeLabels = {
+      virtual:  'Virtual (photo only)',
+      weigh_in: 'Weigh-in',
+      hybrid:   'Hybrid',
+    };
+
     // Info cells
     if (tournament) {
       document.getElementById('f-dates').textContent =
         fmt(tournament.startTime) + ' – ' + fmt(tournament.endTime);
+      if (tournament.maxFishingDays) {
+        document.getElementById('f-fishing-days').textContent =
+          tournament.maxFishingDays + ' eligible fishing day' + (tournament.maxFishingDays !== 1 ? 's' : '');
+      }
 
       const feeEl = document.getElementById('f-fee');
       feeEl.textContent = tournament.entryFeeCents > 0
         ? '$' + (tournament.entryFeeCents / 100).toFixed(2)
         : 'Free';
 
-      const methodLabels = {
-        largest_single: 'Largest Fish',
-        total_length:   'Total Length',
-        total_weight:   'Total Weight',
-        catch_count:    'Most Catches',
-      };
       document.getElementById('f-scoring').textContent =
         methodLabels[tournament.scoringMethod] || tournament.scoringMethod;
 
-      if (tournament.targetSpecies) {
-        document.getElementById('f-species').textContent = tournament.targetSpecies;
+      const speciesArr = Array.isArray(tournament.targetSpecies)
+        ? tournament.targetSpecies
+        : (tournament.targetSpecies ? [tournament.targetSpecies] : []);
+      if (speciesArr.length) {
+        document.getElementById('f-species').textContent = speciesArr.join(', ');
       }
       if (tournament.locationName) {
         document.getElementById('f-location').textContent = tournament.locationName;
+        if (tournament.locationRadiusMiles) {
+          document.getElementById('f-location-sub').textContent =
+            tournament.locationRadiusMiles + ' mile radius boundary';
+        }
+      }
+
+      // Schedule block
+      if (tournament.registrationOpenAt)  show('f-reg-open',  fmtDT(tournament.registrationOpenAt));
+      if (tournament.registrationCloseAt) show('f-reg-close', fmtDT(tournament.registrationCloseAt));
+      show('f-start', fmtDT(tournament.startTime));
+      show('f-end',   fmtDT(tournament.endTime));
+      if (tournament.maxFishingDays)
+        show('f-max-days', tournament.maxFishingDays + ' day' + (tournament.maxFishingDays !== 1 ? 's' : '') + ' maximum');
+      if (tournament.realtimeWindowMinutes)
+        show('f-catch-window', '±' + tournament.realtimeWindowMinutes + ' minutes after end time');
+      if (speciesArr.length)
+        show('f-target-species', speciesArr.join(', '));
+      if (tournament.locationName && tournament.locationRadiusMiles)
+        show('f-boundary', tournament.locationName + ' — ' + tournament.locationRadiusMiles + ' mile radius');
+      else if (tournament.locationName)
+        show('f-boundary', tournament.locationName);
+      if (tournament.mode && tournament.mode !== 'virtual')
+        show('f-mode', modeLabels[tournament.mode] || tournament.mode);
+
+      // Rules
+      const rulesBlock = document.getElementById('f-rules-block');
+      if (tournament.rules && tournament.rules.trim()) {
+        // Organizer-supplied rules — render as paragraphs split on blank lines
+        const paras = tournament.rules.trim().split(/\n\n+/);
+        rulesBlock.innerHTML = paras.map(p =>
+          '<p style="font-size:0.78rem;color:#1a2a3a;line-height:1.55;margin-bottom:8px;padding-left:10px;border-left:2px solid #00c9a7">' +
+          p.replace(/\n/g, '<br>') + '</p>'
+        ).join('');
+      } else {
+        // Default rules when none set
+        rulesBlock.innerHTML = `<ul class="rules-list">
+          <li><strong>Catch Reporting:</strong> All catches, measurements, and timestamps must be logged live using the IQ.Fishing mobile app.</li>
+          <li><strong>Validation:</strong> Photographic evidence with GPS tagging is required for every tournament entry via the app.</li>
+          <li><strong>Compliance:</strong> Competitors must strictly adhere to all applicable state wildlife regulations and official tournament boundary maps.</li>
+          <li><strong>Tackle &amp; Gear:</strong> Standard IGFA class regulations apply unless explicitly amended in the captain's brief.</li>
+          <li><strong>Safety:</strong> All vessels must carry active VHF radios and meet full safety compliance guidelines.</li>
+        </ul>`;
       }
     }
 
-    // Schedule overrides
-    if (OVERRIDES.captainsMeeting) {
-      document.getElementById('f-captains').innerHTML =
-        `<strong>Captain's Meeting:</strong> ${OVERRIDES.captainsMeeting}`;
-    }
-    if (OVERRIDES.awards) {
-      document.getElementById('f-awards').innerHTML =
-        `<strong>Awards Ceremony:</strong> ${OVERRIDES.awards}`;
-    }
+    // Schedule overrides (manual)
+    if (OVERRIDES.captainsMeeting) show('f-captains', OVERRIDES.captainsMeeting);
+    if (OVERRIDES.awards)          show('f-awards',   OVERRIDES.awards);
 
     // Contact / site
     if (OVERRIDES.contact) {
