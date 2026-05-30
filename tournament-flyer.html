@@ -571,12 +571,15 @@
       // Rules
       const rulesBlock = document.getElementById('f-rules-block');
       if (tournament.rules && tournament.rules.trim()) {
-        // Organizer-supplied rules — render as paragraphs split on blank lines
-        const paras = tournament.rules.trim().split(/\n\n+/);
-        rulesBlock.innerHTML = paras.map(p =>
-          '<p style="font-size:0.78rem;color:#1a2a3a;line-height:1.55;margin-bottom:8px;padding-left:10px;border-left:2px solid #00c9a7">' +
-          p.replace(/\n/g, '<br>') + '</p>'
-        ).join('');
+        const lines = tournament.rules.trim().split('\n').map(l => l.trim()).filter(Boolean);
+        rulesBlock.innerHTML = '<ul class="rules-list">' +
+          lines.map(line => {
+            const m = line.match(/^([^:]{1,40}):\s*(.+)$/);
+            return m
+              ? '<li><strong>' + m[1] + ':</strong> ' + m[2] + '</li>'
+              : '<li>' + line + '</li>';
+          }).join('') +
+        '</ul>';
       } else {
         // Default rules when none set
         rulesBlock.innerHTML = `<ul class="rules-list">
