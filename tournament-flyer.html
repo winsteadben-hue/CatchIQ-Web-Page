@@ -570,25 +570,28 @@
 
       // Rules
       const rulesBlock = document.getElementById('f-rules-block');
+      // Build boundary rule if location data is present
+      const boundaryItem = (tournament.locationName && tournament.locationRadiusMiles)
+        ? '<li><strong>Fishing Boundary:</strong> ' + tournament.locationName + ' — ' + tournament.locationRadiusMiles + ' mile radius</li>'
+        : (tournament.locationName ? '<li><strong>Fishing Boundary:</strong> ' + tournament.locationName + '</li>' : '');
+
+      function ruleItem(line) {
+        const m = line.match(/^([^:]{1,40}):\s*(.+)$/);
+        return m ? '<li><strong>' + m[1] + ':</strong> ' + m[2] + '</li>' : '<li>' + line + '</li>';
+      }
+
       if (tournament.rules && tournament.rules.trim()) {
         const lines = tournament.rules.trim().split('\n').map(l => l.trim()).filter(Boolean);
-        rulesBlock.innerHTML = '<ul class="rules-list">' +
-          lines.map(line => {
-            const m = line.match(/^([^:]{1,40}):\s*(.+)$/);
-            return m
-              ? '<li><strong>' + m[1] + ':</strong> ' + m[2] + '</li>'
-              : '<li>' + line + '</li>';
-          }).join('') +
-        '</ul>';
+        rulesBlock.innerHTML = '<ul class="rules-list">' + boundaryItem +
+          lines.map(ruleItem).join('') + '</ul>';
       } else {
-        // Default rules when none set
-        rulesBlock.innerHTML = `<ul class="rules-list">
-          <li><strong>Catch Reporting:</strong> All catches, measurements, and timestamps must be logged live using the IQ.Fishing mobile app.</li>
-          <li><strong>Validation:</strong> Photographic evidence with GPS tagging is required for every tournament entry via the app.</li>
-          <li><strong>Compliance:</strong> Competitors must strictly adhere to all applicable state wildlife regulations and official tournament boundary maps.</li>
-          <li><strong>Tackle &amp; Gear:</strong> Standard IGFA class regulations apply unless explicitly amended in the captain's brief.</li>
-          <li><strong>Safety:</strong> All vessels must carry active VHF radios and meet full safety compliance guidelines.</li>
-        </ul>`;
+        rulesBlock.innerHTML = '<ul class="rules-list">' + boundaryItem +
+          '<li><strong>Catch Reporting:</strong> All catches, measurements, and timestamps must be logged live using the IQ.Fishing mobile app.</li>' +
+          '<li><strong>Validation:</strong> Photographic evidence with GPS tagging is required for every tournament entry via the app.</li>' +
+          '<li><strong>Compliance:</strong> Competitors must strictly adhere to all applicable state wildlife regulations and official tournament boundary maps.</li>' +
+          '<li><strong>Tackle &amp; Gear:</strong> Standard IGFA class regulations apply unless explicitly amended in the captain\'s brief.</li>' +
+          '<li><strong>Safety:</strong> All vessels must carry active VHF radios and meet full safety compliance guidelines.</li>' +
+          '</ul>';
       }
     }
 
