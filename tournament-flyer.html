@@ -488,7 +488,7 @@
     const slug = document.getElementById('slug-input').value.trim();
 
     // Sponsor
-    const sponsor = OVERRIDES.sponsor || page.displayName || '';
+    const sponsor = OVERRIDES.sponsor || (tournament && tournament.sponsorName) || page.displayName || '';
     document.getElementById('f-sponsor').textContent = sponsor || 'TOURNAMENT SPONSOR';
 
     // Name + subtitle
