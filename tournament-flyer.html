@@ -604,8 +604,10 @@
     if (OVERRIDES.awards)          show('f-awards',   OVERRIDES.awards);
 
     // Contact / site
-    if (OVERRIDES.contact) {
-      document.getElementById('f-contact').textContent = OVERRIDES.contact;
+    const contactText = OVERRIDES.contact ||
+      (tournament && tournament.organizerEmail ? tournament.organizerEmail : '');
+    if (contactText) {
+      document.getElementById('f-contact').textContent = contactText;
     }
     document.getElementById('f-site').textContent = 'iq.fishing/tournament/?id=' + slug;
 
