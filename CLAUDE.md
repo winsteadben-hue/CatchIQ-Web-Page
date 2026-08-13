@@ -1,58 +1,68 @@
-# CatchIQ Web Page — Claude Instructions
+# IQ.Fishing Website
 
-Static marketing/landing site for catchiq.fishing. Plain HTML, CSS, and SVG — no build step, no framework.
-
-## Quick Rules
-
-/ state assumptions, never guess silently  
-/ minimum code, nothing speculative  
-/ surgical changes, don't refactor adjacent code  
-/ define success, loop until verified
+Static marketing and companion site for IQ.Fishing (CatchIQ). Plain HTML, CSS, and vanilla JS — no framework, no build step. Deployed via GitHub Pages at **iq.fishing**.
 
 ---
 
-## Source Control
+## Stack
 
-This project is maintained in GitHub at `winsteadben-hue/CatchIQ-Web-Page`. After every change, commit and push to keep the repository current. Do not leave changes uncommitted.
+- Pure HTML5 / CSS3 / vanilla JavaScript (ES6+)
+- No build step, no preprocessors, no dependencies
+- Google Fonts (Playfair Display, DM Sans, DM Mono)
+- GitHub repo: `winsteadben-hue/CatchIQ-Web-Page` → auto-deploys to GitHub Pages on push
 
 ---
 
-## Coding Principles
+## File Structure
 
-### 1. Think Before Coding
+```
+index.html              Main landing page
+about.html              About IQ.Fishing
+help.html               App help / FAQ
+privacy.html            Privacy policy
+delete-account.html     Account deletion instructions
+join.html               Tournament join page
+get-app.html            App download links
+tournament-help.html    Tournament guide
+tournament-flyer.html   Promo flyer
+support-widget.js       Embedded support chat widget
+CNAME                   Custom domain (iq.fishing)
+charter/index.html      Charter/guide page
+tournament/index.html   Tournament portal
+tournament/register/    Registration flow
+screenshots/            Product screenshots
+```
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+---
 
-Before implementing:
-- State assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them — don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+## Local Preview
 
-### 2. Simplicity First
+No build needed — open any HTML file in a browser, or serve locally:
 
-**Minimum code that solves the problem. Nothing speculative.**
+```bash
+python -m http.server 8000
+# or: npx http-server
+```
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No JavaScript where plain HTML/CSS works.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+---
 
-### 3. Surgical Changes
+## Deployment
 
-**Touch only what you must. Clean up only your own mess.**
+Push to `main` on GitHub → GitHub Pages auto-deploys. Changes are live within ~1 minute.
 
-- Don't "improve" adjacent markup, styles, or comments.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it — don't delete it.
-- Every changed line should trace directly to the request.
+**Always commit and push after every change** — don't leave changes uncommitted.
 
-### 4. Goal-Driven Execution
+```bash
+git add <files>
+git commit -m "description"
+git push
+```
 
-**Define success criteria. Loop until verified.**
+---
 
-- Transform vague tasks into verifiable goals before starting.
-- For multi-step tasks, state a brief plan with a verify step for each.
-- Clarifying questions come before implementation, not after mistakes.
+## Key Conventions
+
+- **No JavaScript where plain HTML/CSS works.** This is a static site — keep it that way.
+- **Inline styles are common here** — match the existing pattern, don't refactor to external CSS unless asked.
+- **No build tooling** — don't introduce npm, bundlers, or preprocessors.
+- **Domain:** `iq.fishing` (main), `tournaments.iq.fishing` (tournament portal)
