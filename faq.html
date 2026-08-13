@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ — IQ.Fishing</title>
+  <meta name="description" content="Common questions about IQ.Fishing: AI species identification, offline maps, catch-probability predictions, automatic tide and solunar tracking, TrueCatch tournament verification, and platform availability.">
+  <link rel="canonical" href="https://iq.fishing/faq.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is IQ.Fishing?",
+        "acceptedAnswer": { "@type": "Answer", "text": "IQ.Fishing is an intelligent fishing companion app. Photograph a catch and it automatically identifies the species, reads the GPS and timestamp from the photo, and pairs it with the tide, weather, and solunar conditions at that moment. Over time it builds a predictive model of your best spots, and it includes a tournament platform with automated catch verification." }
+      },
+      {
+        "@type": "Question",
+        "name": "What does the \"IQ\" in IQ.Fishing mean?",
+        "acceptedAnswer": { "@type": "Answer", "text": "It's not a measure of a fish's intelligence — it refers to the intelligence layer the app builds around your fishing. IQ.Fishing combines your personal catch history with real-time environmental data (tide phase, barometric pressure, solunar period, moon phase) to score how likely you are to catch fish at any saved spot on any future date. The more you log, the sharper the predictions get." }
+      },
+      {
+        "@type": "Question",
+        "name": "How does IQ.Fishing identify fish species from a photo?",
+        "acceptedAnswer": { "@type": "Answer", "text": "On-device AI reads the photo, automatically extracts the GPS location and timestamp from the image's EXIF data, identifies the species, and estimates length and weight — with no manual entry required." }
+      },
+      {
+        "@type": "Question",
+        "name": "Does IQ.Fishing work without cell service?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Nautical charts, your saved spots, and your full catch log are all fully accessible offline, since the best fishing spots rarely have good reception." }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the catch-probability prediction work?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Pick any future date and IQ.Fishing scores the forecast conditions against your personal catch history, returning a color-coded probability score for every spot you've saved. The model improves with every trip you log." }
+      },
+      {
+        "@type": "Question",
+        "name": "What conditions does IQ.Fishing track automatically?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Tide phase, barometric pressure trend, wind, solunar score, and moon phase are all fetched automatically and permanently paired with each catch — no separate apps to check." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is IQ.Fishing available on Android?",
+        "acceptedAnswer": { "@type": "Answer", "text": "IQ.Fishing is currently available on the App Store for iOS. Android support is coming soon." }
+      },
+      {
+        "@type": "Question",
+        "name": "How does tournament catch verification (TrueCatch) work?",
+        "acceptedAnswer": { "@type": "Answer", "text": "TrueCatch is IQ.Fishing's automated tournament verification system. Every tournament submission goes through seven validation layers, including EXIF timestamp checks, GPS location verification, AI species recognition, and a measurement-instrument check, so results are fair without manual disputes." }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #060e1a;
+      --deep:    #0a1628;
+      --surface: #0f2040;
+      --teal:    #00c9a7;
+      --teal-dim:#007a65;
+      --amber:   #f5a623;
+      --mist:    #b8cfe0;
+      --fog:     #546e80;
+      --white:   #eef4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── WATER BACKGROUND ── */
+    .water-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .water-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 60% at 20% 80%, rgba(0,201,167,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 80% at 80% 20%, rgba(0,80,160,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 50% at 50% 100%, rgba(0,20,60,0.8) 0%, transparent 70%);
+    }
+
+    /* ── LAYOUT ── */
+    .page { position: relative; z-index: 2; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(6,14,26,0.95) 0%, rgba(6,14,26,0) 100%);
+      backdrop-filter: blur(2px);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--fog);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-links a.active { color: var(--teal); }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 140px 24px 100px;
+    }
+
+    .page-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 48px;
+    }
+
+    .lead {
+      font-size: 1.15rem;
+      line-height: 1.75;
+      color: var(--mist);
+      margin-bottom: 56px;
+      font-weight: 300;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: rgba(0,201,167,0.06);
+      border: 1px solid rgba(0,201,167,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .faq-item { background: var(--deep); padding: 32px; }
+    .faq-q {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .faq-a {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--mist);
+      font-weight: 300;
+    }
+
+    .contact-block {
+      background: var(--deep);
+      border: 1px solid rgba(0,201,167,0.12);
+      border-radius: 16px;
+      padding: 40px;
+      margin-top: 56px;
+    }
+    .contact-block p { font-size: 0.95rem; line-height: 1.8; color: var(--mist); font-weight: 300; }
+    .contact-block a { color: var(--teal); text-decoration: none; }
+    .contact-block a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 48px 32px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      position: relative;
+      z-index: 2;
+    }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy { font-size: 0.75rem; color: var(--fog); }
+    .footer-copy a { color: var(--fog); text-decoration: none; }
+    .footer-copy a:hover { color: var(--teal); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-links { gap: 16px; }
+      footer { padding: 32px 24px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="water-bg"></div>
+
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/">
+      <img src="catchiq_logo.svg" alt="IQ.Fishing" style="height:38px;width:auto;display:block;">
+    </a>
+    <div class="nav-links">
+      <a href="/about.html">About</a>
+      <a href="/help.html">Help</a>
+      <a href="/faq.html" class="active">FAQ</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:support@iq.fishing">Contact</a>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <p class="page-eyebrow">Frequently Asked Questions</p>
+    <h1 class="page-title">Everything anglers<br>ask us first.</h1>
+
+    <p class="lead">
+      Straight answers about how IQ.Fishing actually works — species identification, offline maps, catch predictions, and tournament verification.
+    </p>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-q">What is IQ.Fishing?</div>
+        <p class="faq-a">An intelligent fishing companion app. Photograph a catch and it automatically identifies the species, reads the GPS and timestamp from the photo, and pairs it with the tide, weather, and solunar conditions at that moment. Over time it builds a predictive model of your best spots, and it includes a tournament platform with automated catch verification.</p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What does the "IQ" in IQ.Fishing mean?</div>
+        <p class="faq-a">It's not a measure of a fish's intelligence — it refers to the intelligence layer the app builds around your fishing. IQ.Fishing combines your personal catch history with real-time environmental data (tide phase, barometric pressure, solunar period, moon phase) to score how likely you are to catch fish at any saved spot on any future date. The more you log, the sharper the predictions get.</p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How does IQ.Fishing identify fish species from a photo?</div>
+        <p class="faq-a">On-device AI reads the photo, automatically extracts the GPS location and timestamp from the image's EXIF data, identifies the species, and estimates length and weight — with no manual entry required.</p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Does IQ.Fishing work without cell service?</div>
+        <p class="faq-a">Yes. Nautical charts, your saved spots, and your full catch log are all fully accessible offline, since the best fishing spots rarely have good reception.</p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How does the catch-probability prediction work?</div>
+        <p class="faq-a">Pick any future date and IQ.Fishing scores the forecast conditions against your personal catch history, returning a color-coded probability score for every spot you've saved. The model improves with every trip you log.</p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What conditions does IQ.Fishing track automatically?</div>
+        <p class="faq-a">Tide phase, barometric pressure trend, wind, solunar score, and moon phase are all fetched automatically and permanently paired with each catch — no separate apps to check.</p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Is IQ.Fishing available on Android?</div>
+        <p class="faq-a">IQ.Fishing is currently available on the App Store for iOS. Android support is coming soon.</p>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How does tournament catch verification (TrueCatch) work?</div>
+        <p class="faq-a">TrueCatch is IQ.Fishing's automated tournament verification system. Every tournament submission goes through seven validation layers, including EXIF timestamp checks, GPS location verification, AI species recognition, and a measurement-instrument check, so results are fair without manual disputes.</p>
+      </div>
+
+    </div>
+
+    <div class="contact-block">
+      <p>Didn't find your question? <a href="mailto:support@iq.fishing">support@iq.fishing</a> — we read every message.</p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 IQ.Fishing. All rights reserved.</div>
+      <div class="footer-copy">
+        <a href="/privacy.html">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="https://api.catchiq.fishing/terms">Terms of Service</a>
+        &nbsp;·&nbsp;
+        <a href="/about.html">About</a>
+        &nbsp;·&nbsp;
+        iq.fishing
+      </div>
+    </div>
+  </footer>
+
+</div><!-- .page -->
+
+<script src="/support-widget.js"></script>
+</body>
+</html>
