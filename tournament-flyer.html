@@ -701,9 +701,9 @@
     if (captainsMeetingText) show('f-captains', captainsMeetingText);
     if (awardsText)          show('f-awards',   awardsText);
 
-    // Contact / site
-    const contactText = OVERRIDES.contact ||
-      (tournament && tournament.organizerEmail ? tournament.organizerEmail : '');
+    // Contact / site — never the organizer's personal email; the generic
+    // support address is the public-facing contact for every tournament.
+    const contactText = OVERRIDES.contact || 'support@iq.fishing';
     if (contactText) {
       document.getElementById('f-contact').textContent = contactText;
     }
