@@ -384,6 +384,9 @@
     <div class="flyer-body">
       <div class="body-left">
 
+        <div class="section-title" id="f-description-title" style="display:none">About This Tournament</div>
+        <div class="schedule-item" id="f-description" style="display:none"></div>
+
         <div class="section-title">Schedule &amp; Details</div>
         <div id="f-schedule-block">
           <div class="schedule-item" id="f-reg-open" style="display:none"><strong>Registration Opens:</strong> <span></span></div>
@@ -552,6 +555,13 @@
           document.getElementById('f-location-sub').textContent =
             tournament.locationRadiusMiles + ' mile radius boundary';
         }
+      }
+
+      // Description
+      if (tournament.description && tournament.description.trim()) {
+        document.getElementById('f-description').textContent = tournament.description.trim();
+        document.getElementById('f-description').style.display = 'block';
+        document.getElementById('f-description-title').style.display = 'block';
       }
 
       // Schedule block
