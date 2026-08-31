@@ -173,6 +173,50 @@
     .body-left { flex: 1; }
     .body-right { width: 190px; flex-shrink: 0; }
 
+    /* Prizes */
+    .prizes-row {
+      display: flex;
+      gap: 12px;
+      margin: 0 28px 18px;
+      flex-wrap: wrap;
+    }
+    .prize-card {
+      flex: 1;
+      min-width: 150px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .prize-card-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .prize-card-placement {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .prize-card-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+    .prize-card-sponsor {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
     /* Rules */
     .section-title {
       font-size: 0.85rem;
@@ -381,6 +425,9 @@
       </div>
     </div>
 
+    <div class="section-title" id="f-prizes-title" style="display:none; margin: 0 28px 10px;">Prizes</div>
+    <div class="prizes-row" id="f-prizes" style="display:none"></div>
+
     <div class="flyer-body">
       <div class="body-left">
 
@@ -562,6 +609,25 @@
         document.getElementById('f-description').textContent = tournament.description.trim();
         document.getElementById('f-description').style.display = 'block';
         document.getElementById('f-description-title').style.display = 'block';
+      }
+
+      // Prizes
+      if (Array.isArray(tournament.prizes) && tournament.prizes.length) {
+        const prizesEl = document.getElementById('f-prizes');
+        prizesEl.innerHTML = tournament.prizes.map(function (p) {
+          var logo = p.sponsorLogoUrl
+            ? '<img class="prize-card-logo" src="' + p.sponsorLogoUrl + '" alt="">'
+            : '';
+          var sponsor = p.sponsorName
+            ? '<div class="prize-card-sponsor">Courtesy of ' + p.sponsorName + '</div>'
+            : '';
+          return '<div class="prize-card">' + logo +
+            '<div><div class="prize-card-placement">' + p.placementLabel + '</div>' +
+            '<div class="prize-card-text">' + p.prizeText + '</div>' +
+            sponsor + '</div></div>';
+        }).join('');
+        prizesEl.style.display = 'flex';
+        document.getElementById('f-prizes-title').style.display = 'block';
       }
 
       // Schedule block
