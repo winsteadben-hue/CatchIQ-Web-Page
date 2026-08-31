@@ -187,34 +187,41 @@
       border-radius: 8px;
       padding: 12px 14px;
       display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .prize-card-placement {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .prize-item {
+      display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .prize-card-logo {
-      width: 36px;
-      height: 36px;
+      width: 28px;
+      height: 28px;
       border-radius: 6px;
       object-fit: contain;
       flex-shrink: 0;
       border: 1px solid var(--border);
     }
-    .prize-card-placement {
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
     .prize-card-text {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: var(--navy);
-      line-height: 1.2;
+      line-height: 1.25;
     }
     .prize-card-sponsor {
       font-size: 0.65rem;
+      font-weight: 400;
       color: var(--muted);
-      margin-top: 2px;
     }
 
     /* Rules */
@@ -611,20 +618,32 @@
         document.getElementById('f-description-title').style.display = 'block';
       }
 
-      // Prizes
+      // Prizes — grouped into one box per placement (a placement can have
+      // more than one prize, e.g. a subscription + a gift certificate).
       if (Array.isArray(tournament.prizes) && tournament.prizes.length) {
         const prizesEl = document.getElementById('f-prizes');
-        prizesEl.innerHTML = tournament.prizes.map(function (p) {
-          var logo = p.sponsorLogoUrl
-            ? '<img class="prize-card-logo" src="' + p.sponsorLogoUrl + '" alt="">'
-            : '';
-          var sponsor = p.sponsorName
-            ? '<div class="prize-card-sponsor">Courtesy of ' + p.sponsorName + '</div>'
-            : '';
-          return '<div class="prize-card">' + logo +
-            '<div><div class="prize-card-placement">' + p.placementLabel + '</div>' +
-            '<div class="prize-card-text">' + p.prizeText + '</div>' +
-            sponsor + '</div></div>';
+        const groups = [];
+        const byPlacement = {};
+        tournament.prizes.forEach(function (p) {
+          if (!byPlacement[p.placement]) {
+            byPlacement[p.placement] = { placementLabel: p.placementLabel, items: [] };
+            groups.push(byPlacement[p.placement]);
+          }
+          byPlacement[p.placement].items.push(p);
+        });
+        prizesEl.innerHTML = groups.map(function (g) {
+          const items = g.items.map(function (p) {
+            var logo = p.sponsorLogoUrl
+              ? '<img class="prize-card-logo" src="' + p.sponsorLogoUrl + '" alt="">'
+              : '';
+            var sponsor = p.sponsorName
+              ? ' <span class="prize-card-sponsor">(' + p.sponsorName + ')</span>'
+              : '';
+            return '<div class="prize-item">' + logo +
+              '<span class="prize-card-text">' + p.prizeText + sponsor + '</span></div>';
+          }).join('');
+          return '<div class="prize-card"><div class="prize-card-placement">' +
+            g.placementLabel + '</div>' + items + '</div>';
         }).join('');
         prizesEl.style.display = 'flex';
         document.getElementById('f-prizes-title').style.display = 'block';
