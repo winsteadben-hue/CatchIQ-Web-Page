@@ -609,9 +609,12 @@
       }
     }
 
-    // Schedule overrides (manual)
-    if (OVERRIDES.captainsMeeting) show('f-captains', OVERRIDES.captainsMeeting);
-    if (OVERRIDES.awards)          show('f-awards',   OVERRIDES.awards);
+    // Captain's meeting / awards — per-tournament fields take priority,
+    // falling back to the manual OVERRIDES above only if unset.
+    const captainsMeetingText = (tournament && tournament.captainsMeeting) || OVERRIDES.captainsMeeting;
+    const awardsText = (tournament && tournament.awardsCeremony) || OVERRIDES.awards;
+    if (captainsMeetingText) show('f-captains', captainsMeetingText);
+    if (awardsText)          show('f-awards',   awardsText);
 
     // Contact / site
     const contactText = OVERRIDES.contact ||
