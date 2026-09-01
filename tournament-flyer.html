@@ -510,36 +510,6 @@
 
 <script>
   const API = 'https://api.catchiq.fishing';
-  // Public token (pk.) — same one shipped in the IQ.Fishing app bundle, safe client-side.
-  const MAPBOX_PUBLIC_TOKEN = 'pk.eyJ1Ijoid2luc3RlYWRiZW4zMTEyNiIsImEiOiJjbW1udXVvcHkwNzFwMnRwbWRtb3ZvbzZnIn0.SLHSPT3w-gZF1Jf9PS04eg';
-
-  // Builds a circle polygon (great-circle approximation) around a center point.
-  function boundaryCircleGeoJSON(lat, lng, radiusMiles, points) {
-    const radiusKm = radiusMiles * 1.60934;
-    const earthRadiusKm = 6371;
-    const coords = [];
-    for (let i = 0; i <= points; i++) {
-      const angle = (i / points) * 2 * Math.PI;
-      const dx = radiusKm * Math.cos(angle);
-      const dy = radiusKm * Math.sin(angle);
-      const dLat = (dy / earthRadiusKm) * (180 / Math.PI);
-      const dLng = (dx / earthRadiusKm) * (180 / Math.PI) / Math.cos(lat * Math.PI / 180);
-      coords.push([lng + dLng, lat + dLat]);
-    }
-    return {
-      type: 'Feature',
-      properties: { stroke: '#00c9a7', 'stroke-width': 8, 'stroke-opacity': 1, fill: '#00c9a7', 'fill-opacity': 0.18 },
-      geometry: { type: 'Polygon', coordinates: [coords] },
-    };
-  }
-
-  function boundaryMapUrl(lat, lng, radiusMiles) {
-    const circle = boundaryCircleGeoJSON(lat, lng, radiusMiles, 40);
-    const overlay = 'geojson(' + encodeURIComponent(JSON.stringify(circle)) + ')';
-    const pin = 'pin-s+1e4fa3(' + lng + ',' + lat + ')';
-    return 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static/' +
-      pin + ',' + overlay + '/auto/440x300@2x?padding=30&access_token=' + MAPBOX_PUBLIC_TOKEN;
-  }
 
   // ── Manual overrides — edit these before printing ──────────────────────────
   const OVERRIDES = {
@@ -669,10 +639,10 @@
         }
       }
 
-      // Boundary map — only when we have coordinates and a radius to draw
-      if (tournament.locationLat != null && tournament.locationLng != null && tournament.locationRadiusMiles) {
-        const mapImg = document.getElementById('f-boundary-map');
-        mapImg.src = boundaryMapUrl(tournament.locationLat, tournament.locationLng, tournament.locationRadiusMiles);
+      // Boundary map — pre-rendered server-side when the organizer sets/edits
+      // location + radius; the flyer just displays the resulting image.
+      if (tournament.boundaryMapUrl) {
+        document.getElementById('f-boundary-map').src = tournament.boundaryMapUrl;
         document.getElementById('f-boundary-map-caption').textContent =
           tournament.locationRadiusMiles + ' mile fishing boundary';
         document.getElementById('f-boundary-map-wrap').style.display = 'block';
