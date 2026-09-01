@@ -418,7 +418,7 @@
     <div class="flyer-header">
       <div class="header-left">
         <div class="tournament-name" id="f-name">Tournament Name</div>
-        <div class="tournament-subtitle" id="f-subtitle">Annual Premier Fishing Challenge</div>
+        <div class="tournament-subtitle" id="f-subtitle" style="display:none"></div>
       </div>
       <img id="f-logo" class="header-logo" alt="Tournament logo">
       <div id="f-logo-placeholder" class="logo-placeholder">TOURNAMENT<br>LOGO</div>
@@ -544,7 +544,7 @@
   // ── Manual overrides — edit these before printing ──────────────────────────
   const OVERRIDES = {
     sponsor:        '',   // e.g. "Big Bass Marine - Platinum Sponsor"
-    subtitle:       'Annual Premier Fishing Challenge',
+    subtitle:       '',   // e.g. "Annual Premier Fishing Challenge" — leave blank to hide unless set per-tournament
     captainsMeeting:'See tournament registration for date & time.',
     awards:         'Following final weigh-in at the main sponsor pavilion.',
     contact:        '',   // e.g. "John Smith · 555-867-5309 · john@example.com"
@@ -604,7 +604,11 @@
 
     // Name + subtitle
     document.getElementById('f-name').textContent = tournament ? tournament.title : page.displayName;
-    document.getElementById('f-subtitle').textContent = OVERRIDES.subtitle;
+    const subtitleText = (tournament && tournament.subtitle) || OVERRIDES.subtitle;
+    if (subtitleText) {
+      document.getElementById('f-subtitle').textContent = subtitleText;
+      document.getElementById('f-subtitle').style.display = 'block';
+    }
 
     // Logo
     const logoUrl = tournament && tournament.logoImageUrl;
